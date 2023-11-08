@@ -41,9 +41,9 @@ public class App extends Application {
   }
 
   public static void main(String[] args) {
-    // launch();
-    File testing = FilePicker.getdbFile(dbFiles.SURVEY_CREATORS);
-    System.out.println(testing);
+    launch();
+    // File testing = FilePicker.getdbFile(dbFiles.SURVEY_CREATORS);
+    // System.out.println(testing);
   }
 
 }
