@@ -29,7 +29,6 @@
                 <version>3.8.0</version>
                 <configuration>
                     <release>11</release>
-                    <sceneBuilderPath>/Applications/SceneBuilder.app</sceneBuilderPath>
                 </configuration>
             </plugin>
             <plugin>
