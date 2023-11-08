@@ -33,7 +33,6 @@ public class FilePicker {
       try {
         dir.mkdir();
       } catch (SecurityException e) {
-        // TODO
         System.out.println("Error creating directory: " + e.getMessage());
       }
     }
