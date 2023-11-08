@@ -8,7 +8,7 @@ public class FilePicker {
   public enum dbFiles {
     USERS("users.bin"),
     ADMINS("admins.bin"),
-    SURVEY_CREATORS("admins.bin"),
+    SURVEY_CREATORS("surveycreators.bin"),
     SURVEYS("surveys.bin"),
     REVIEWS("reviews.bin");
 
