@@ -1,5 +1,9 @@
+db/FilePicker$dbFiles.class
+db/FilePicker.class
 module-info.class
 aps/PrimaryController.class
+db/BinHandler.class
 aps/LandingController.class
 aps/SecondaryController.class
 aps/App.class
+helper/Misc.class
