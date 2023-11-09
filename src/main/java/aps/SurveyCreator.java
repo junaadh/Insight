@@ -36,9 +36,6 @@ public class SurveyCreator {
     private TextField phoneNoTextField;
 
     @FXML
-    private DatePicker birthDatePicker;
-
-    @FXML
     private Button createButton;
 
     //Event Listener on Create Button
