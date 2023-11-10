@@ -23,8 +23,8 @@ public class FilePicker {
     }
   }
 
-  private static File getDbDir() {
-    String root = System.clearProperty("user.dir");
+  public static String getDbDir() {
+    String root = System.getProperty("user.dir");
     String dbDir = root + "/database";
 
     File dir = new File(dbDir);
@@ -37,17 +37,19 @@ public class FilePicker {
       }
     }
 
-    return dir;
+    return dbDir + "/";
   }
 
   public static File getdbFile(dbFiles type) {
-    File dbDir = getDbDir();
+    String dbDir = getDbDir();
     String filename = type.getFilename();
-    File db = new File(dbDir, filename);
+    File db = new File(dbDir + filename);
 
     if (!db.exists()) {
       try {
         db.createNewFile();
+        db.setReadable(true);
+        db.setWritable(true);
       } catch (IOException e) {
         System.out.println("Error creating db: " + e.getMessage());
       }
