@@ -8,10 +8,10 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.io.RandomAccessFile;
 
 import db.FilePicker;
 import db.FilePicker.dbFiles;
-import java.io.File;
 
 /**
  * JavaFX App
@@ -40,10 +40,10 @@ public class App extends Application {
     return fxmlLoader.load();
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     // launch();
-    File testing = FilePicker.getdbFile(dbFiles.SURVEYS);
-    File testing2 = FilePicker.getdbFile(dbFiles.ADMINS);
+    RandomAccessFile testing = FilePicker.getdbFile(dbFiles.SURVEYS);
+    RandomAccessFile testing2 = FilePicker.getdbFile(dbFiles.ADMINS);
     System.out.println(testing);
     System.out.println(testing2);
   }

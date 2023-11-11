@@ -2,6 +2,7 @@ package db;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 
 public class FilePicker {
 
@@ -40,12 +41,12 @@ public class FilePicker {
     return dbDir + "/";
   }
 
-  public static File getdbFile(dbFiles type) {
+  public static RandomAccessFile getdbFile(dbFiles type) throws IOException {
     String dbDir = getDbDir();
     String filename = type.getFilename();
     File db = new File(dbDir + filename);
 
-    if (!db.exists()) {
+    if (!(db.exists())) {
       try {
         db.createNewFile();
         db.setReadable(true);
@@ -55,7 +56,8 @@ public class FilePicker {
       }
     }
 
-    return db;
+    RandomAccessFile rdb = new RandomAccessFile(db, "rw");
+    return rdb;
   }
 
 }

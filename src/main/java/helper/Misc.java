@@ -1,17 +1,21 @@
 package helper;
 
+import java.lang.reflect.Constructor;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import forms.Person;
 
 public class Misc {
 
-	public static boolean isIntegar(String str) {
+  public static boolean isIntegar(String str) {
     if (str == null) {
       return false;
     }
     try {
-    	Integer.parseInt(str);
+      Integer.parseInt(str);
     } catch (NumberFormatException e) {
-    	return false;
+      return false;
     }
     return true;
   }
@@ -22,9 +26,9 @@ public class Misc {
     }
 
     try {
-    	Double.parseDouble(str);
+      Double.parseDouble(str);
     } catch (NumberFormatException e) {
-    	return false;
+      return false;
     }
     return true;
   }
@@ -39,5 +43,51 @@ public class Misc {
     // string is bascially char[]
     return template.matcher(str).matches();
   }
-  
+
+  public static String boolString(boolean bool) {
+    return bool ? "true" : "false";
+  }
+
+  public static String[] destructure(String record) {
+    String regex = ":\\d+:";
+    Pattern template = Pattern.compile(regex);
+    Matcher matches = template.matcher(record);
+
+    String result = matches.replaceAll(":").substring(1);
+    return result.split(":");
+  }
+
+  public static Person constructPerson(String[] info, Class<? extends Person> classname) throws Exception {
+    Constructor<? extends Person> constructor = classname.getConstructor(String[].class);
+
+    return constructor.newInstance((Object) info);
+  }
+
+  public enum prefix {
+    NID("0:"),
+    USERNAME(":1:"),
+    FULLNAME(":2:"),
+    PASSWORD(":3:"),
+    AGE(":4:"),
+    GENDER(":5:"),
+    EMAIL(":6:"),
+    PHONENO(":7:"),
+    ISADMIN(":8:"),
+    ISSURVEYCREATOR(":9:"),
+    ADMINID(":10:"),
+    USERID(":11:"),
+    SCID(":12:"),
+    SCDEPT(":13");
+
+    private final String field;
+
+    prefix(String field) {
+      this.field = field;
+    }
+
+    public String getPrefix() {
+      return field;
+    }
+  }
+
 }
