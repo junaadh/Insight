@@ -7,6 +7,7 @@ import java.io.RandomAccessFile;
 public class FilePicker {
 
   public enum dbFiles {
+    PERSON("person.bin"),
     USERS("users.bin"),
     ADMINS("admins.bin"),
     SURVEY_CREATORS("surveycreators.bin"),

@@ -41,11 +41,7 @@ public class App extends Application {
   }
 
   public static void main(String[] args) throws IOException {
-    // launch();
-    RandomAccessFile testing = FilePicker.getdbFile(dbFiles.SURVEYS);
-    RandomAccessFile testing2 = FilePicker.getdbFile(dbFiles.ADMINS);
-    System.out.println(testing);
-    System.out.println(testing2);
+    launch();
   }
 
 }

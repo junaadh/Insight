@@ -24,6 +24,13 @@ public class FilePickerTest {
   }
 
   @Test
+  public void testGetPersonDb() throws IOException {
+    RandomAccessFile db = FilePicker.getdbFile(dbFiles.PERSON);
+
+    assertNotNull(db);
+  }
+
+  @Test
   public void testGetUserDb() throws IOException {
     RandomAccessFile db = FilePicker.getdbFile(dbFiles.USERS);
 
