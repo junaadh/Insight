@@ -4,6 +4,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 
 import org.junit.Test;
 
@@ -22,57 +24,37 @@ public class FilePickerTest {
   }
 
   @Test
-  public void testGetUserDb() {
-    File db = FilePicker.getdbFile(dbFiles.USERS);
+  public void testGetUserDb() throws IOException {
+    RandomAccessFile db = FilePicker.getdbFile(dbFiles.USERS);
 
     assertNotNull(db);
-    assertTrue(db.exists());
-    assertTrue(db.isFile());
-    assertTrue(db.canRead());
-    assertTrue(db.canWrite());
   }
 
   @Test
-  public void testGetAdminDb() {
-    File db = FilePicker.getdbFile(dbFiles.ADMINS);
+  public void testGetAdminDb() throws IOException {
+    RandomAccessFile db = FilePicker.getdbFile(dbFiles.ADMINS);
 
     assertNotNull(db);
-    assertTrue(db.exists());
-    assertTrue(db.isFile());
-    assertTrue(db.canRead());
-    assertTrue(db.canWrite());
   }
 
   @Test
-  public void testGetSurveyCreatorDb() {
-    File db = FilePicker.getdbFile(dbFiles.SURVEY_CREATORS);
+  public void testGetSurveyCreatorDb() throws IOException {
+    RandomAccessFile db = FilePicker.getdbFile(dbFiles.SURVEY_CREATORS);
 
     assertNotNull(db);
-    assertTrue(db.exists());
-    assertTrue(db.isFile());
-    assertTrue(db.canRead());
-    assertTrue(db.canWrite());
   }
 
   @Test
-  public void testGetSurveyDb() {
-    File db = FilePicker.getdbFile(dbFiles.SURVEYS);
+  public void testGetSurveyDb() throws IOException {
+    RandomAccessFile db = FilePicker.getdbFile(dbFiles.SURVEYS);
 
     assertNotNull(db);
-    assertTrue(db.exists());
-    assertTrue(db.isFile());
-    assertTrue(db.canRead());
-    assertTrue(db.canWrite());
   }
 
   @Test
-  public void testGetReviewsDb() {
-    File db = FilePicker.getdbFile(dbFiles.REVIEWS);
+  public void testGetReviewsDb() throws IOException {
+    RandomAccessFile db = FilePicker.getdbFile(dbFiles.REVIEWS);
 
     assertNotNull(db);
-    assertTrue(db.exists());
-    assertTrue(db.isFile());
-    assertTrue(db.canRead());
-    assertTrue(db.canWrite());
   }
 }

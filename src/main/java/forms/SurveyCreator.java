@@ -1,5 +1,7 @@
 package forms;
 
+import helper.Misc.prefix;
+
 public class SurveyCreator extends Person {
 
   private String scId;
@@ -21,11 +23,24 @@ public class SurveyCreator extends Person {
     this.scDept = scDept;
   }
 
+  public SurveyCreator(String[] args) {
+    super(args);
+    this.scId = args[11];
+    this.scDept = args[12];
+  }
+
   public String getScId() {
     return this.scId;
   }
 
   public String getScDept() {
     return this.scDept;
+  }
+
+  public String buildInfo() {
+    StringBuilder fd = new StringBuilder(super.buildInfo());
+    fd.append(prefix.SCID.getPrefix() + this.scId);
+    fd.append(prefix.SCDEPT.getPrefix() + this.scDept);
+    return fd.toString();
   }
 }

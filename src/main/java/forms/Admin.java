@@ -1,5 +1,7 @@
 package forms;
 
+import helper.Misc.prefix;
+
 public class Admin extends Person {
 
   private String adminId;
@@ -18,8 +20,18 @@ public class Admin extends Person {
     this.adminId = adminId;
   }
 
+  public Admin(String[] args) {
+    super(args);
+    this.adminId = args[11];
+  }
+
   public String getAdminId() {
     return this.adminId;
   }
 
+  public String buildInfo() {
+    StringBuilder fd = new StringBuilder(super.buildInfo());
+    fd.append(prefix.ADMINID.getPrefix() + this.adminId);
+    return fd.toString();
+  }
 }
