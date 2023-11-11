@@ -47,8 +47,10 @@ public class BinHandlerTest {
 
 	@Test
 	public void TestEupdateUserData() throws IOException {
+		User uszB = handler.updateUser(usz, "mail@gmail.com", "mail@mail.com", prefix.EMAIL);
 
 		// assertTrue(bool);
+		assertEquals(uszB.getEmail(), "mail@mail.com");
 	}
 
 	@Test

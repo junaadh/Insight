@@ -5,7 +5,6 @@ import java.io.RandomAccessFile;
 
 import db.FilePicker.dbFiles;
 import forms.Admin;
-import forms.Person;
 import forms.SurveyCreator;
 import forms.User;
 import helper.Misc;
@@ -163,7 +162,57 @@ public class BinHandler {
   }
 
   // update wrapper methods
-  // public
+  public User updateUser(User user, String oldStr, String newString, prefix field) {
+    User usr = null;
+    String pref = field.getPrefix();
+    try {
+      Boolean bool = update(dbFiles.USERS, pref + oldStr, pref + newString, user.getNid());
+      // System.out.println("1");
+      if (bool) {
+        // System.out.println("2");
+        usr = searchUsers(prefix.NID, user.getNid());
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to update data: " + e.getStackTrace());
+    }
+    return usr;
+  }
+
+  public Admin updateAdmin(Admin admin, String oldStr, String newString, prefix field) {
+    Admin adn = null;
+    String pref = field.getPrefix();
+    try {
+      Boolean bool = update(dbFiles.ADMINS, pref + oldStr, pref + newString, admin.getNid());
+      if (bool) {
+        adn = searchAdmins(prefix.NID, admin.getNid());
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to update data: " + e.getStackTrace());
+    }
+    return adn;
+  }
+
+  public SurveyCreator updateSurveyCreator(SurveyCreator sc, String oldStr, String newString, prefix field) {
+    SurveyCreator scr = null;
+    String pref = field.getPrefix();
+    try {
+      Boolean bool = update(dbFiles.SURVEY_CREATORS, pref + oldStr, pref + newString, sc.getNid());
+      if (bool) {
+        scr = searchSurveyCreator(prefix.NID, sc.getNid());
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to update data: " + e.getStackTrace());
+    }
+    return scr;
+  }
+
+  public void updateSurvey() {
+    // TODO:: implement update survey to return obj survey
+  }
+
+  public void updateReview() {
+    // TODO:: implement update survey to return obj survey
+  }
 
   // // Misc generic searches
   public boolean usernameExists(String username, dbFiles type) {
@@ -233,15 +282,11 @@ public class BinHandler {
     return null;
   }
 
-  protected static boolean update(dbFiles type, String oldStr, String newStr) throws IOException {
-    String old = read(type, oldStr);
-    old.replace(oldStr, newStr);
-    if (delete(type, oldStr)) {
-      if (create(type, newStr)) {
-        return true;
-      }
-    } else {
-      return false;
+  protected static boolean update(dbFiles type, String oldStr, String newStr, String uniqueID) throws IOException {
+    String old = read(type, uniqueID);
+    String newContent = old.replace(oldStr, newStr);
+    if (delete(type, uniqueID) && create(type, newContent)) {
+      return true;
     }
     return false;
   }
