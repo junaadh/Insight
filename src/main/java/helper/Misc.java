@@ -33,6 +33,13 @@ public class Misc {
     return true;
   }
 
+  public static boolean isEmail(String str) {
+    String match = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}$";
+    Pattern template = Pattern.compile(match);
+
+    return template.matcher(str).matches();
+  }
+
   public static boolean isDateString(String str) {
     // sets up date template
     // basically (0-9 | 10 - 19 | 20 - 29 | 30 - 31)/(0-9 | 10 - 12)/(yyyy)

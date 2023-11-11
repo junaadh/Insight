@@ -5,6 +5,7 @@ import java.io.RandomAccessFile;
 
 import db.FilePicker.dbFiles;
 import forms.Admin;
+import forms.Person;
 import forms.SurveyCreator;
 import forms.User;
 import helper.Misc;
@@ -20,6 +21,7 @@ public class BinHandler {
       return null;
     } else {
       try {
+        create(dbFiles.PERSON, data);
         return create(dbFiles.USERS, data) ? "User added successfully" : null;
       } catch (IOException e) {
         System.out.println("ERROR: Failed to create user: " + e.getStackTrace());
@@ -34,6 +36,7 @@ public class BinHandler {
       return null;
     }
     try {
+      create(dbFiles.PERSON, data);
       return create(dbFiles.ADMINS, data) ? "Admin added successfully" : null;
     } catch (IOException e) {
       System.out.println("ERROR: Failed to create admin: " + e.getStackTrace());
@@ -47,6 +50,7 @@ public class BinHandler {
       return null;
     }
     try {
+      create(dbFiles.PERSON, data);
       return create(dbFiles.SURVEY_CREATORS, data) ? "SurveyCreator added successfully" : null;
     } catch (IOException e) {
       System.out.println("ERROR: Failed to create survey creator: " + e.getStackTrace());
@@ -68,6 +72,7 @@ public class BinHandler {
   public boolean deleteUser(User user) {
     String data = prefix.NID.getPrefix() + user.getNid();
     try {
+      delete(dbFiles.PERSON, data);
       return delete(dbFiles.USERS, data);
     } catch (IOException e) {
       System.out.println("ERROR: Failed to remove user: " + e.getStackTrace());
@@ -78,6 +83,7 @@ public class BinHandler {
   public boolean deleteAdmin(Admin admin) {
     String data = prefix.NID.getPrefix() + admin.getNid();
     try {
+      delete(dbFiles.PERSON, data);
       return delete(dbFiles.ADMINS, data);
     } catch (IOException e) {
       System.out.println("ERROR: Failed to remove admin: " + e.getStackTrace());
@@ -88,6 +94,7 @@ public class BinHandler {
   public boolean deleteSurveyCreator(SurveyCreator sc) {
     String data = prefix.NID.getPrefix() + sc.getNid();
     try {
+      delete(dbFiles.PERSON, data);
       return delete(dbFiles.SURVEY_CREATORS, data);
     } catch (IOException e) {
       System.out.println("ERROR: Failed to remove surevey creator: " + e.getStackTrace());
@@ -106,6 +113,19 @@ public class BinHandler {
   }
 
   // search wrapper methods
+  public Person searchPerson(prefix field, String query) {
+    String queryStr = field.getPrefix() + query;
+    try {
+      String[] results = Misc.destructure(read(dbFiles.PERSON, queryStr));
+      return Misc.constructPerson(results, Person.class);
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed fetching data from db: " + e.getStackTrace());
+    } catch (Exception er) {
+      System.out.println("ERROR: Failed fetching data from db: " + er.getStackTrace());
+    }
+    return null;
+  }
+
   public User searchUsers(prefix field, String query) {
     String queryStr = field.getPrefix() + query;
     try {
