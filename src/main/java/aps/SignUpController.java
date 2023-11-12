@@ -81,9 +81,10 @@ public class SignUpController implements Initializable {
 
 	@FXML
 	private void signInAction() throws IOException {
-		if (infoCheck() && !Session.getInstance().isAdmin()) {
-			App.setRoot("primary");
-		} else {
+		if (infoCheck()) {
+			if (Session.getInstance().isAdmin()) {
+				App.setRoot("primary");
+			}
 			App.setRoot("dash");
 		}
 	}
@@ -104,14 +105,14 @@ public class SignUpController implements Initializable {
 			role = roleBox.getValue().toString();
 		}
 
-		boolean usernameIsValid = !username.isBlank() && new BinHandler().usernameExists(username, dbFiles.PERSON);
+		boolean usernameIsValid = !username.isBlank() && !(new BinHandler().usernameExists(username, dbFiles.PERSON));
 		boolean emailIsValid = !email.isBlank() && Misc.isEmail(email);
 		boolean passwordIsValid = !password.isBlank() && password.length() > 8;
-		boolean confirmPasswordIsValid = !confirmPassword.isBlank() && confirmPassword.equals(password);
+		boolean confirmPasswordIsValid = !confirmPassword.isBlank() && password.equals(confirmPassword);
 		boolean nameIsValid = !name.isBlank() && name.contains(" ");
 		boolean ageIsValid = !age.isBlank() && Misc.isIntegar(age);
 		boolean phoneNoIsValid = !phoneNo.isBlank() && Misc.isIntegar(phoneNo);
-		boolean nidIsValid = !nid.isBlank() && new BinHandler().nidExists(nid, dbFiles.PERSON);
+		boolean nidIsValid = !nid.isBlank() && !(new BinHandler().nidExists(nid, dbFiles.PERSON));
 		boolean nationalityIsValid = !nationality.isBlank();
 		boolean genderIsValid = gender != null;
 		boolean roleIsValid = role != null;
@@ -128,7 +129,7 @@ public class SignUpController implements Initializable {
 		errStr += !nidIsValid ? "One person can register once. Contact admin to reset password\n" : "";
 		errStr += !nationalityIsValid ? "Nationality cannot be blank\n" : "";
 		errStr += !genderIsValid ? "Please select a gender\n" : "";
-		errStr += roleIsValid ? "Have to select a role\n" : "";
+		errStr += !roleIsValid ? "Have to select a role\n" : "";
 
 		BinHandler handler = new BinHandler();
 
