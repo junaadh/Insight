@@ -47,4 +47,11 @@ public final class Session {
   public boolean isUser() {
     return this.isUser;
   }
+
+  public void initSession() {
+    this.person = null;
+    this.isAdmin = false;
+    this.isSurveyCreator = false;
+    this.isUser = false;
+  }
 }

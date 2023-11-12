@@ -38,6 +38,7 @@ public class LoginController implements Initializable {
       loginAlert.setHeaderText("Invalid login Details");
       loginAlert.setContentText("Username and password cannot be empty");
       loginAlert.showAndWait();
+      return;
     }
 
     BinHandler handler = new BinHandler();
@@ -57,7 +58,7 @@ public class LoginController implements Initializable {
     } else if (person.getIsSurveyCreator()) {
       App.setRoot("sCreator");
     } else {
-      App.setRoot("primary");
+      App.setRoot("dash");
     }
 
   }
