@@ -70,8 +70,9 @@ public class BinHandlerTest {
 
 	// @Test
 	// public void TestHreadUserDataUsername() {
-	// Admin userrA = handler.searchAdmins(prefix.USERNAME, "junaadh");
+	// User userrA = handler.searchUsers(prefix.NID, "A010101");
 	// System.out.println(userrA.buildInfo());
+	// handler.deleteUser(userrA);
 	// }
 
 }

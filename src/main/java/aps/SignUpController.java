@@ -78,7 +78,7 @@ public class SignUpController implements Initializable {
 		ObservableList<String> genders = FXCollections.observableArrayList("Male", "Female");
 		genderBox.setItems(genders);
 		// debuggin only
-		// Session.getInstance().setIsAdmin();
+		Session.getInstance().setIsAdmin();
 		dynamicHandler();
 	}
 
@@ -211,7 +211,6 @@ public class SignUpController implements Initializable {
 
 			if (role.equals("User")) {
 				TextField userid = creator.createTextField(userIdValue);
-				System.out.println(userIdValue + "whtd the fuck:::SASFAS");
 				userid.setEditable(false);
 				dynB.getChildren().clear();
 				dynB.getChildren().add(userid);

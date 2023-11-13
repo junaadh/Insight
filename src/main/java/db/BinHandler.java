@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import db.FilePicker.dbFiles;
 import forms.Admin;
@@ -265,17 +267,20 @@ public class BinHandler {
   public String genUserId() {
     String id;
     try {
+      System.out.println("HEREI AM MOFO");
       ArrayList<String> ids = exportinfo(dbFiles.USERS);
+      System.out.println(ids.size() + "hehehe");
       Collections.sort(ids);
-      String last = ids.isEmpty() ? "0" : ids.get(ids.size());
+      System.out.println(ids.size() + "hgdhdgdgdggd");
+      String last = ids.isEmpty() ? "0" : ids.get(ids.size() - 1);
       if (Misc.isIntegar(last)) {
         id = String.format("%05d", Integer.parseInt(last) + 1);
         return "UX" + id;
       }
     } catch (IOException e) {
-      System.out.println("ERROR: Failed to generate id: " + e.getStackTrace());
+      System.out.println("ERROR: Failed to generate id: " + e.getMessage());
     } catch (Exception er) {
-      System.out.println("ERROR: Failed to generate id" + er.getStackTrace());
+      System.out.println("ERROR: Failed to generate id" + er.getMessage());
     }
     return null;
   }
@@ -285,7 +290,7 @@ public class BinHandler {
     try {
       ArrayList<String> ids = exportinfo(dbFiles.ADMINS);
       Collections.sort(ids);
-      String last = ids.isEmpty() ? "0" : ids.get(ids.size());
+      String last = ids.isEmpty() ? "0" : ids.get(ids.size() - 1);
       if (Misc.isIntegar(last)) {
         id = String.format("%05d", Integer.parseInt(last) + 1);
         return "AX" + id;
@@ -303,7 +308,7 @@ public class BinHandler {
     try {
       ArrayList<String> ids = exportinfo(dbFiles.SURVEY_CREATORS);
       Collections.sort(ids);
-      String last = ids.isEmpty() ? "0" : ids.get(ids.size());
+      String last = ids.isEmpty() ? "0" : ids.get(ids.size() - 1);
       if (Misc.isIntegar(last)) {
         id = String.format("%05d", Integer.parseInt(last) + 1);
         return "SC" + id;
@@ -314,6 +319,63 @@ public class BinHandler {
       System.out.println("ERROR: Failed to generate id" + er.getStackTrace());
     }
     return null;
+  }
+
+  // loading wrappers
+  public static Map<String, User> loadUser() {
+    Map<String, User> userMap = new HashMap<String, User>();
+    try {
+      ArrayList<User> data = exporter(dbFiles.USERS);
+
+      for (User u : data) {
+        userMap.put(u.getNid() + u.getUsername() + u.getUserId() + u.getFullname(), u);
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to process data: " + e.getStackTrace());
+    } catch (Exception er) {
+      System.out.println("ERROR: Failed to process data: " + er.getStackTrace());
+    }
+    return userMap;
+  }
+
+  public static Map<String, Admin> loadAdmin() {
+    Map<String, Admin> adminMap = new HashMap<String, Admin>();
+    try {
+      ArrayList<Admin> data = exporter(dbFiles.ADMINS);
+
+      for (Admin u : data) {
+        adminMap.put(u.getNid() + u.getUsername() + u.getAdminId() + u.getFullname(), u);
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to process data: " + e.getStackTrace());
+    } catch (Exception er) {
+      System.out.println("ERROR: Failed to process data: " + er.getStackTrace());
+    }
+    return adminMap;
+  }
+
+  public static Map<String, SurveyCreator> loadSurveyCreator() {
+    Map<String, SurveyCreator> scMap = new HashMap<String, SurveyCreator>();
+    try {
+      ArrayList<SurveyCreator> data = exporter(dbFiles.SURVEY_CREATORS);
+
+      for (SurveyCreator sc : data) {
+        scMap.put(sc.getNid() + sc.getUsername() + sc.getScId() + sc.getFullname(), sc);
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to process data: " + e.getStackTrace());
+    } catch (Exception er) {
+      System.out.println("ERROR: Failed to process data: " + er.getStackTrace());
+    }
+    return scMap;
+  }
+
+  public static void loadSurvey() {
+    // TODO:
+  }
+
+  public static void loadReview() {
+    // TODO:
   }
 
   // DO NOT CHANGE
@@ -440,8 +502,11 @@ public class BinHandler {
       db.read(infobytes);
       int recordSize = Integer.parseInt(new String(infobytes).trim());
 
+      currentPosition += RECORD_INFO_BUFFER;
+      db.seek(currentPosition);
+
       StringBuilder cur = new StringBuilder();
-      for (int i = 0; i < currentPosition; i += 3) {
+      for (int i = 0; i < recordSize; i += 3) {
         byte[] hex = new byte[3];
         db.read(hex);
         int charv = Integer.parseInt(new String(hex), 16);
@@ -480,6 +545,65 @@ public class BinHandler {
       currentPosition += recordSize;
     }
     return id;
+
+  }
+
+  private static <T> ArrayList<User> exporter(dbFiles type) throws IOException, Exception {
+    long currentPosition = 0;
+    RandomAccessFile db = FilePicker.getdbFile(type);
+    ArrayList<T> obj = new ArrayList<T>();
+
+    while (currentPosition < db.length()) {
+      db.seek(currentPosition);
+
+      byte[] infobytes = new byte[RECORD_INFO_BUFFER];
+      db.read(infobytes);
+      int recordSize = Integer.parseInt(new String(infobytes).trim());
+
+      currentPosition += RECORD_INFO_BUFFER;
+      db.seek(currentPosition);
+
+      StringBuilder cur = new StringBuilder();
+      for (int i = 0; i < recordSize; i += 3) {
+        byte[] hex = new byte[3];
+        db.read(hex);
+        int charv = Integer.parseInt(new String(hex), 16);
+        cur.append((char) charv);
+      }
+
+      switch (type) {
+        case USERS:
+          User u = (User) Misc.constructPerson(Misc.destructure(cur.toString()), User.class);
+          obj.add((T) u);
+          break;
+
+        case ADMINS:
+          Admin a = (Admin) Misc.constructPerson(Misc.destructure(cur.toString()), Admin.class);
+          obj.add((T) a);
+          break;
+
+        case SURVEY_CREATORS:
+          SurveyCreator sc = (SurveyCreator) Misc.constructPerson(Misc.destructure(cur.toString()),
+              SurveyCreator.class);
+          obj.add((T) sc);
+          break;
+
+        case SURVEYS:
+          // TODO: do survey list
+          break;
+
+        case REVIEWS:
+          // TODO: do reviews list
+          break;
+
+        default:
+          break;
+      }
+
+      currentPosition += recordSize;
+    }
+    return obj;
+
   }
 
 }
