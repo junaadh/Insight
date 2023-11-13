@@ -15,14 +15,15 @@ public class User extends Person {
 			String gender,
 			String email,
 			int phoneNo,
+			String nationality,
 			String userId) {
-		super(nid, username, fullname, password, age, gender, email, phoneNo, false, false);
+		super(nid, username, fullname, password, age, gender, email, phoneNo, nationality, false, false);
 		this.userId = userId;
 	}
 
 	public User(String[] args) {
 		super(args);
-		this.userId = args[11];
+		this.userId = args[12];
 	}
 
 	public String getUserId() {

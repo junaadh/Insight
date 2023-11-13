@@ -54,4 +54,19 @@ public final class Session {
     this.isSurveyCreator = false;
     this.isUser = false;
   }
+
+  public String role() {
+    if (this.isAdmin) {
+      return "Admin";
+    } else if (this.isSurveyCreator) {
+      return "Survey Creator";
+    } else {
+      return "User";
+    }
+  }
+
+  // for debugging
+  public void setIsAdmin() {
+    this.isAdmin = !this.isAdmin;
+  }
 }

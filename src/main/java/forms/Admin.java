@@ -15,14 +15,15 @@ public class Admin extends Person {
       String gender,
       String email,
       int phoneNo,
+      String nationality,
       String adminId) {
-    super(nid, username, fullname, password, age, gender, email, phoneNo, true, false);
+    super(nid, username, fullname, password, age, gender, email, phoneNo, nationality, true, false);
     this.adminId = adminId;
   }
 
   public Admin(String[] args) {
     super(args);
-    this.adminId = args[11];
+    this.adminId = args[12];
   }
 
   public String getAdminId() {

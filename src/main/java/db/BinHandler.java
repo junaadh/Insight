@@ -2,6 +2,8 @@ package db;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
+import java.util.Collections;
 
 import db.FilePicker.dbFiles;
 import forms.Admin;
@@ -259,6 +261,61 @@ public class BinHandler {
     return false;
   }
 
+  // Id Calculations
+  public String genUserId() {
+    String id;
+    try {
+      ArrayList<String> ids = exportinfo(dbFiles.USERS);
+      Collections.sort(ids);
+      String last = ids.isEmpty() ? "0" : ids.get(ids.size());
+      if (Misc.isIntegar(last)) {
+        id = String.format("%05d", Integer.parseInt(last) + 1);
+        return "UX" + id;
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to generate id: " + e.getStackTrace());
+    } catch (Exception er) {
+      System.out.println("ERROR: Failed to generate id" + er.getStackTrace());
+    }
+    return null;
+  }
+
+  public String genAdminId() {
+    String id;
+    try {
+      ArrayList<String> ids = exportinfo(dbFiles.ADMINS);
+      Collections.sort(ids);
+      String last = ids.isEmpty() ? "0" : ids.get(ids.size());
+      if (Misc.isIntegar(last)) {
+        id = String.format("%05d", Integer.parseInt(last) + 1);
+        return "AX" + id;
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to generate id: " + e.getStackTrace());
+    } catch (Exception er) {
+      System.out.println("ERROR: Failed to generate id" + er.getStackTrace());
+    }
+    return null;
+  }
+
+  public String genSurveyCreatorId() {
+    String id;
+    try {
+      ArrayList<String> ids = exportinfo(dbFiles.SURVEY_CREATORS);
+      Collections.sort(ids);
+      String last = ids.isEmpty() ? "0" : ids.get(ids.size());
+      if (Misc.isIntegar(last)) {
+        id = String.format("%05d", Integer.parseInt(last) + 1);
+        return "SC" + id;
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to generate id: " + e.getStackTrace());
+    } catch (Exception er) {
+      System.out.println("ERROR: Failed to generate id" + er.getStackTrace());
+    }
+    return null;
+  }
+
   // DO NOT CHANGE
   private static int RECORD_INFO_BUFFER = 10;
 
@@ -369,6 +426,60 @@ public class BinHandler {
     }
 
     return new RecordInfo();
+  }
+
+  private static ArrayList<String> exportinfo(dbFiles type) throws IOException, Exception {
+    long currentPosition = 0;
+    RandomAccessFile db = FilePicker.getdbFile(type);
+    ArrayList<String> id = new ArrayList<String>();
+
+    while (currentPosition < db.length()) {
+      db.seek(currentPosition);
+
+      byte[] infobytes = new byte[RECORD_INFO_BUFFER];
+      db.read(infobytes);
+      int recordSize = Integer.parseInt(new String(infobytes).trim());
+
+      StringBuilder cur = new StringBuilder();
+      for (int i = 0; i < currentPosition; i += 3) {
+        byte[] hex = new byte[3];
+        db.read(hex);
+        int charv = Integer.parseInt(new String(hex), 16);
+        cur.append((char) charv);
+      }
+
+      switch (type) {
+        case USERS:
+          User u = (User) Misc.constructPerson(Misc.destructure(cur.toString()), User.class);
+          id.add(u.getUserId().substring(2));
+          break;
+
+        case ADMINS:
+          Admin a = (Admin) Misc.constructPerson(Misc.destructure(cur.toString()), Admin.class);
+          id.add(a.getAdminId().substring(2));
+          break;
+
+        case SURVEY_CREATORS:
+          SurveyCreator sc = (SurveyCreator) Misc.constructPerson(Misc.destructure(cur.toString()),
+              SurveyCreator.class);
+          id.add(sc.getScId().substring(2));
+          break;
+
+        case SURVEYS:
+          // TODO: do survey list
+          break;
+
+        case REVIEWS:
+          // TODO: do reviews list
+          break;
+
+        default:
+          break;
+      }
+
+      currentPosition += recordSize;
+    }
+    return id;
   }
 
 }

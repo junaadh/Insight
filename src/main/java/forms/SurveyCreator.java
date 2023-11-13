@@ -16,17 +16,18 @@ public class SurveyCreator extends Person {
       String gender,
       String email,
       int phoneNo,
+      String nationality,
       String scId,
       String scDept) {
-    super(nid, username, fullname, password, age, gender, email, phoneNo, false, false);
+    super(nid, username, fullname, password, age, gender, email, phoneNo, nationality, false, false);
     this.scId = scId;
     this.scDept = scDept;
   }
 
   public SurveyCreator(String[] args) {
     super(args);
-    this.scId = args[11];
-    this.scDept = args[12];
+    this.scId = args[12];
+    this.scDept = args[13];
   }
 
   public String getScId() {

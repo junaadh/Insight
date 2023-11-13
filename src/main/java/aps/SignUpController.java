@@ -11,22 +11,25 @@ import forms.Person;
 import forms.SurveyCreator;
 import forms.User;
 import helper.Hasher;
+import helper.Javax;
 import helper.Misc;
 import helper.Session;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 
 public class SignUpController implements Initializable {
-
-	@FXML
-	private ComboBox<String> roleBox;
 
 	@FXML
 	private TextField usernameField;
@@ -58,16 +61,25 @@ public class SignUpController implements Initializable {
 	@FXML
 	private TextField nationalityField;
 
+	@FXML
+	private VBox vbox;
+
+	@FXML
+	private StackPane stack;
+
+	private String roleGlobal;
+	private String userIdValue;
+	private String adminIdValue;
+	private String scIdValue;
+	private String scDept;
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		ObservableList<String> genders = FXCollections.observableArrayList("Male", "Female");
 		genderBox.setItems(genders);
-		ObservableList<String> roles = FXCollections.observableArrayList("Admin", "Survey Creator", "User");
-		roleBox.setItems(roles);
-		if (Session.getInstance().isAdmin()) {
-			roleBox.setVisible(true);
-			roleBox.setDisable(false);
-		}
+		// debuggin only
+		// Session.getInstance().setIsAdmin();
+		dynamicHandler();
 	}
 
 	@FXML
@@ -99,11 +111,10 @@ public class SignUpController implements Initializable {
 		String phoneNo = phoneNoField.getText();
 		String nid = nidField.getText();
 		String nationality = nationalityField.getText();
-		String gender = genderBox.getValue().toString();
-		String role = "User";
-		if (Session.getInstance().isAdmin()) {
-			role = roleBox.getValue().toString();
-		}
+		String gender = genderBox.getValue() != null ? genderBox.getValue().toString() : null;
+		// if (Session.getInstance().isAdmin()) {
+		// role = roleBox.getValue() != null ? roleBox.getValue().toString() : null;
+		// }
 
 		boolean usernameIsValid = !username.isBlank() && !(new BinHandler().usernameExists(username, dbFiles.PERSON));
 		boolean emailIsValid = !email.isBlank() && Misc.isEmail(email);
@@ -115,7 +126,7 @@ public class SignUpController implements Initializable {
 		boolean nidIsValid = !nid.isBlank() && !(new BinHandler().nidExists(nid, dbFiles.PERSON));
 		boolean nationalityIsValid = !nationality.isBlank();
 		boolean genderIsValid = gender != null;
-		boolean roleIsValid = role != null;
+		boolean roleIsValid = roleGlobal != null;
 
 		String errStr = "";
 
@@ -136,17 +147,17 @@ public class SignUpController implements Initializable {
 		String hashed = Hasher.genSalted(password);
 
 		if (errStr.isBlank()) {
-			if (role.equals("Survey Creator")) {
+			if (roleGlobal.equals("Survey Creator")) {
 				SurveyCreator sc = new SurveyCreator(nid, username, name, hashed, Integer.parseInt(age), gender, email,
-						Integer.parseInt(phoneNo), "", "");
+						Integer.parseInt(phoneNo), nationality, scIdValue, scDept);
 				return handler.addSurveyCreator(sc) != null;
-			} else if (role.equals("Admin")) {
+			} else if (roleGlobal.equals("Admin")) {
 				Admin admin = new Admin(nid, username, name, hashed, Integer.parseInt(age), gender, email,
-						Integer.parseInt(phoneNo), "");
+						Integer.parseInt(phoneNo), nationality, adminIdValue);
 				return handler.addAdmin(admin) != null;
 			} else {
 				User user = new User(nid, username, name, hashed, Integer.parseInt(age), gender, email,
-						Integer.parseInt(phoneNo), "");
+						Integer.parseInt(phoneNo), nationality, userIdValue);
 				boolean bool = handler.addUser(user) != null;
 				if (bool && !Session.getInstance().isAdmin()) {
 					Session.getInstance().setPerson((Person) user);
@@ -161,6 +172,65 @@ public class SignUpController implements Initializable {
 
 			return false;
 		}
+	}
+
+	private void dynamicHandler() {
+		Javax creator = new Javax();
+		ObservableList<String> depts = FXCollections.observableArrayList("IT", "HR", "ADMIN");
+		Button trigger = creator.createButton("Sign Up");
+		trigger.setMaxWidth(Double.MAX_VALUE);
+		trigger.setOnAction(event -> {
+			try {
+				signInAction();
+			} catch (IOException e) {
+				System.out.println("ERROR: Failed to invoke signin");
+			}
+		});
+
+		ObservableList<String> roles;
+		if (Session.getInstance().isAdmin()) {
+			trigger.setText("Set Up");
+			roles = FXCollections.observableArrayList("Admin", "Survey Creator", "User");
+		} else {
+			roles = FXCollections.observableArrayList("User");
+		}
+		ComboBox<String> roleBox = creator.createComboBox("Assign Role", roles);
+		BinHandler bin = new BinHandler();
+		userIdValue = bin.genUserId();
+		adminIdValue = bin.genAdminId();
+		scIdValue = bin.genSurveyCreatorId();
+
+		stack.getChildren().add(roleBox);
+		VBox dynB = new VBox(20);
+		vbox.getChildren().add(dynB);
+		vbox.getChildren().add(trigger);
+
+		roleBox.setOnAction(event -> {
+			String role = roleBox.getValue().toString();
+			roleGlobal = role;
+
+			if (role.equals("User")) {
+				TextField userid = creator.createTextField(userIdValue);
+				System.out.println(userIdValue + "whtd the fuck:::SASFAS");
+				userid.setEditable(false);
+				dynB.getChildren().clear();
+				dynB.getChildren().add(userid);
+			} else if (role.equals("Admin")) {
+				TextField adminid = creator.createTextField(adminIdValue);
+				adminid.setEditable(false);
+				dynB.getChildren().clear();
+				dynB.getChildren().add(adminid);
+			} else {
+				ComboBox<String> dept = creator.createComboBox("Department", depts);
+				TextField scId = creator.createTextField(scIdValue);
+				scId.setEditable(false);
+				Node[] nodes = { dept, scId };
+				HBox sc = creator.createHBox(nodes);
+				dynB.getChildren().clear();
+				dynB.getChildren().add(sc);
+			}
+		});
+
 	}
 
 }

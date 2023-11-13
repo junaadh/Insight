@@ -10,14 +10,17 @@ import org.junit.runners.MethodSorters;
 
 import static org.junit.Assert.assertTrue;
 
+import forms.Admin;
+import forms.Person;
 import forms.User;
 import helper.Misc.prefix;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class BinHandlerTest {
 
-	User userr = new User("A999999", "ahmed000", "ahmed ali", "123456", 21, "m", "mail@mail.com", 7770000, "jun777");
-	User usz = new User("A000000", "ali000", "ali ahmed", "334445", 22, "m", "mail@mail.com", 7009000, "ux99088");
+	User userr = new User("A999999", "ahmed000", "ahmed ali", "123456", 21, "m", "mail@mail.com", 7770000, "Mv",
+			"jun777");
+	User usz = new User("A000000", "ali000", "ali ahmed", "334445", 22, "m", "mail@mail.com", 7009000, "Mv", "ux99088");
 	BinHandler handler = new BinHandler();
 
 	@Test
@@ -64,5 +67,11 @@ public class BinHandlerTest {
 		boolean test = handler.deleteUser(userr);
 		assertTrue(test);
 	}
+
+	// @Test
+	// public void TestHreadUserDataUsername() {
+	// Admin userrA = handler.searchAdmins(prefix.USERNAME, "junaadh");
+	// System.out.println(userrA.buildInfo());
+	// }
 
 }
