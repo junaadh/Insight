@@ -13,6 +13,7 @@ public class Person {
   private String gender;
   private String email;
   private int phoneNo;
+  private String nationality;
   private boolean isAdmin;
   private boolean isSurveyCreator;
 
@@ -25,6 +26,7 @@ public class Person {
       String gender,
       String email,
       int phoneNo,
+      String nationality,
       boolean isAdmin,
       boolean isSurveyCreator) {
     // can be passport/myKad
@@ -36,6 +38,7 @@ public class Person {
     this.gender = gender;
     this.email = email;
     this.phoneNo = phoneNo;
+    this.nationality = nationality;
     this.isAdmin = isAdmin;
     this.isSurveyCreator = isSurveyCreator;
   }
@@ -49,8 +52,9 @@ public class Person {
     this.gender = args[6];
     this.email = args[7];
     this.phoneNo = Integer.parseInt(args[8]);
-    this.isAdmin = args[9].equals("true") ? true : false;
-    this.isSurveyCreator = args[10].equals("true") ? true : false;
+    this.nationality = args[9];
+    this.isAdmin = args[10].equals("true") ? true : false;
+    this.isSurveyCreator = args[11].equals("true") ? true : false;
   }
 
   public String getNid() {
@@ -93,6 +97,10 @@ public class Person {
     return String.valueOf(this.phoneNo);
   }
 
+  public String getNationality() {
+    return this.nationality;
+  }
+
   public boolean getIsAdmin() {
     return this.isAdmin;
   }
@@ -111,6 +119,7 @@ public class Person {
     data.append(prefix.GENDER.getPrefix() + this.gender);
     data.append(prefix.EMAIL.getPrefix() + this.email);
     data.append(prefix.PHONENO.getPrefix() + getPhoneNoString());
+    data.append(prefix.NATIONALITY.getPrefix() + this.nationality);
     data.append(prefix.ISADMIN.getPrefix() + Misc.boolString(this.isAdmin));
     data.append(prefix.ISSURVEYCREATOR.getPrefix() + Misc.boolString(this.isSurveyCreator));
     return data.toString();

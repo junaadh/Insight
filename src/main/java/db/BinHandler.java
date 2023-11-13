@@ -2,6 +2,10 @@ package db;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import db.FilePicker.dbFiles;
 import forms.Admin;
@@ -24,7 +28,7 @@ public class BinHandler {
         create(dbFiles.PERSON, data);
         return create(dbFiles.USERS, data) ? "User added successfully" : null;
       } catch (IOException e) {
-        System.out.println("ERROR: Failed to create user: " + e.getStackTrace());
+        System.out.println("ERROR: Failed to create user: " + e.getMessage());
       }
       return null;
     }
@@ -39,7 +43,7 @@ public class BinHandler {
       create(dbFiles.PERSON, data);
       return create(dbFiles.ADMINS, data) ? "Admin added successfully" : null;
     } catch (IOException e) {
-      System.out.println("ERROR: Failed to create admin: " + e.getStackTrace());
+      System.out.println("ERROR: Failed to create admin: " + e.getMessage());
     }
     return null;
   }
@@ -53,7 +57,7 @@ public class BinHandler {
       create(dbFiles.PERSON, data);
       return create(dbFiles.SURVEY_CREATORS, data) ? "SurveyCreator added successfully" : null;
     } catch (IOException e) {
-      System.out.println("ERROR: Failed to create survey creator: " + e.getStackTrace());
+      System.out.println("ERROR: Failed to create survey creator: " + e.getMessage());
     }
     return null;
   }
@@ -75,7 +79,7 @@ public class BinHandler {
       delete(dbFiles.PERSON, data);
       return delete(dbFiles.USERS, data);
     } catch (IOException e) {
-      System.out.println("ERROR: Failed to remove user: " + e.getStackTrace());
+      System.out.println("ERROR: Failed to remove user: " + e.getMessage());
     }
     return false;
   }
@@ -86,7 +90,7 @@ public class BinHandler {
       delete(dbFiles.PERSON, data);
       return delete(dbFiles.ADMINS, data);
     } catch (IOException e) {
-      System.out.println("ERROR: Failed to remove admin: " + e.getStackTrace());
+      System.out.println("ERROR: Failed to remove admin: " + e.getMessage());
     }
     return false;
   }
@@ -97,7 +101,7 @@ public class BinHandler {
       delete(dbFiles.PERSON, data);
       return delete(dbFiles.SURVEY_CREATORS, data);
     } catch (IOException e) {
-      System.out.println("ERROR: Failed to remove surevey creator: " + e.getStackTrace());
+      System.out.println("ERROR: Failed to remove surevey creator: " + e.getMessage());
     }
     return false;
   }
@@ -119,9 +123,9 @@ public class BinHandler {
       String[] results = Misc.destructure(read(dbFiles.PERSON, queryStr));
       return Misc.constructPerson(results, Person.class);
     } catch (IOException e) {
-      System.out.println("ERROR: Failed fetching data from db: " + e.getStackTrace());
+      System.out.println("ERROR: Failed fetching data from db: " + e.getMessage());
     } catch (Exception er) {
-      System.out.println("ERROR: Failed fetching data from db: " + er.getStackTrace());
+      System.out.println("ERROR: Failed fetching data from db: " + er.getMessage());
     }
     return null;
   }
@@ -132,9 +136,9 @@ public class BinHandler {
       String[] results = Misc.destructure(read(dbFiles.USERS, queryStr));
       return (User) Misc.constructPerson(results, User.class);
     } catch (IOException e) {
-      System.out.println("ERROR: Failed fetching data from db: " + e.getStackTrace());
+      System.out.println("ERROR: Failed fetching data from db: " + e.getMessage());
     } catch (Exception er) {
-      System.out.println("ERROR: Failed fetching data from db: " + er.getStackTrace());
+      System.out.println("ERROR: Failed fetching data from db: " + er.getMessage());
     }
     return null;
   }
@@ -145,9 +149,9 @@ public class BinHandler {
       String[] results = Misc.destructure(read(dbFiles.ADMINS, queryStr));
       return (Admin) Misc.constructPerson(results, Admin.class);
     } catch (IOException e) {
-      System.out.println("ERROR: Failed fetcing data from db: " + e.getStackTrace());
+      System.out.println("ERROR: Failed fetcing data from db: " + e.getMessage());
     } catch (Exception er) {
-      System.out.println("ERROR: Failed fetching data from db: " + er.getStackTrace());
+      System.out.println("ERROR: Failed fetching data from db: " + er.getMessage());
     }
     return null;
   }
@@ -158,9 +162,9 @@ public class BinHandler {
       String[] results = Misc.destructure(read(dbFiles.SURVEY_CREATORS, queryStr));
       return (SurveyCreator) Misc.constructPerson(results, SurveyCreator.class);
     } catch (IOException e) {
-      System.out.println("ERROR: Failed fetching data from db: " + e.getStackTrace());
+      System.out.println("ERROR: Failed fetching data from db: " + e.getMessage());
     } catch (Exception er) {
-      System.out.println("ERROR: Failed fetching data from db: " + er.getStackTrace());
+      System.out.println("ERROR: Failed fetching data from db: " + er.getMessage());
     }
     return null;
   }
@@ -193,7 +197,7 @@ public class BinHandler {
         usr = searchUsers(prefix.NID, user.getNid());
       }
     } catch (IOException e) {
-      System.out.println("ERROR: Failed to update data: " + e.getStackTrace());
+      System.out.println("ERROR: Failed to update data: " + e.getMessage());
     }
     return usr;
   }
@@ -207,7 +211,7 @@ public class BinHandler {
         adn = searchAdmins(prefix.NID, admin.getNid());
       }
     } catch (IOException e) {
-      System.out.println("ERROR: Failed to update data: " + e.getStackTrace());
+      System.out.println("ERROR: Failed to update data: " + e.getMessage());
     }
     return adn;
   }
@@ -221,7 +225,7 @@ public class BinHandler {
         scr = searchSurveyCreator(prefix.NID, sc.getNid());
       }
     } catch (IOException e) {
-      System.out.println("ERROR: Failed to update data: " + e.getStackTrace());
+      System.out.println("ERROR: Failed to update data: " + e.getMessage());
     }
     return scr;
   }
@@ -242,7 +246,7 @@ public class BinHandler {
       // System.out.println(result + " " + username);
       return result != null ? true : false;
     } catch (IOException e) {
-      System.out.println("ERROR: Failed to fetch data from db: " + e.getStackTrace());
+      System.out.println("ERROR: Failed to fetch data from db: " + e.getMessage());
     }
     return false;
   }
@@ -254,9 +258,127 @@ public class BinHandler {
       // System.out.println(result + " " + nid);
       return result != null ? true : false;
     } catch (IOException e) {
-      System.out.println("ERROR: Failed to fetch data from db: " + e.getStackTrace());
+      System.out.println("ERROR: Failed to fetch data from db: " + e.getMessage());
     }
     return false;
+  }
+
+  // Id Calculations
+  public String genUserId() {
+    String id;
+    try {
+      System.out.println("HEREI AM MOFO");
+      ArrayList<String> ids = exportinfo(dbFiles.USERS);
+      System.out.println(ids.size() + "hehehe");
+      Collections.sort(ids);
+      System.out.println(ids.size() + "hgdhdgdgdggd");
+      String last = ids.isEmpty() ? "0" : ids.get(ids.size() - 1);
+      if (Misc.isIntegar(last)) {
+        id = String.format("%05d", Integer.parseInt(last) + 1);
+        return "UX" + id;
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to generate id: " + e.getMessage());
+    } catch (Exception er) {
+      System.out.println("ERROR: Failed to generate id" + er.getMessage());
+    }
+    return null;
+  }
+
+  public String genAdminId() {
+    String id;
+    try {
+      ArrayList<String> ids = exportinfo(dbFiles.ADMINS);
+      Collections.sort(ids);
+      String last = ids.isEmpty() ? "0" : ids.get(ids.size() - 1);
+      if (Misc.isIntegar(last)) {
+        id = String.format("%05d", Integer.parseInt(last) + 1);
+        return "AX" + id;
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to generate id: " + e.getMessage());
+    } catch (Exception er) {
+      System.out.println("ERROR: Failed to generate id" + er.getMessage());
+    }
+    return null;
+  }
+
+  public String genSurveyCreatorId() {
+    String id;
+    try {
+      ArrayList<String> ids = exportinfo(dbFiles.SURVEY_CREATORS);
+      Collections.sort(ids);
+      String last = ids.isEmpty() ? "0" : ids.get(ids.size() - 1);
+      if (Misc.isIntegar(last)) {
+        id = String.format("%05d", Integer.parseInt(last) + 1);
+        return "SC" + id;
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to generate id: " + e.getMessage());
+    } catch (Exception er) {
+      System.out.println("ERROR: Failed to generate id" + er.getMessage());
+    }
+    return null;
+  }
+
+  // loading wrappers
+  public static Map<String, User> loadUser() {
+    Map<String, User> userMap = new HashMap<String, User>();
+    try {
+      ArrayList<User> data = exporter(dbFiles.USERS);
+
+      for (User u : data) {
+        userMap.put("NID: " + u.getNid() + " Username: " + u.getUsername() + " UserId: " + u.getUserId() + " Fullname: "
+            + u.getFullname(), u);
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to process data: " + e.getMessage());
+    } catch (Exception er) {
+      System.out.println("ERROR: Failed to process data: " + er.getMessage());
+    }
+    return userMap;
+  }
+
+  public static Map<String, Admin> loadAdmin() {
+    Map<String, Admin> adminMap = new HashMap<String, Admin>();
+    try {
+      ArrayList<Admin> data = exporter(dbFiles.ADMINS);
+
+      for (Admin u : data) {
+        // TODO: Format
+        adminMap.put("NID: " + u.getNid() + " Username: " + u.getUsername() + " AdminId: " + u.getAdminId()
+            + " Fullname: " + u.getFullname(), u);
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to process data: " + e.getMessage());
+    } catch (Exception er) {
+      System.out.println("ERROR: Failed to process data: " + er.getMessage());
+    }
+    return adminMap;
+  }
+
+  public static Map<String, SurveyCreator> loadSurveyCreator() {
+    Map<String, SurveyCreator> scMap = new HashMap<String, SurveyCreator>();
+    try {
+      ArrayList<SurveyCreator> data = exporter(dbFiles.SURVEY_CREATORS);
+
+      for (SurveyCreator sc : data) {
+        scMap.put(sc.getNid() + sc.getUsername() + sc.getScId() + sc.getFullname(), sc);
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to process data: " + e.getMessage());
+    } catch (Exception er) {
+      System.out.println("ERROR: Failed to process data: " + er.getMessage());
+    }
+    return scMap;
+  }
+
+  public static void loadSurvey() {
+    // TODO:
+  }
+
+  public static void loadReview() {
+    // TODO:
   }
 
   // DO NOT CHANGE
@@ -369,6 +491,122 @@ public class BinHandler {
     }
 
     return new RecordInfo();
+  }
+
+  private static ArrayList<String> exportinfo(dbFiles type) throws IOException, Exception {
+    long currentPosition = 0;
+    RandomAccessFile db = FilePicker.getdbFile(type);
+    ArrayList<String> id = new ArrayList<String>();
+
+    while (currentPosition < db.length()) {
+      db.seek(currentPosition);
+
+      byte[] infobytes = new byte[RECORD_INFO_BUFFER];
+      db.read(infobytes);
+      int recordSize = Integer.parseInt(new String(infobytes).trim());
+
+      currentPosition += RECORD_INFO_BUFFER;
+      db.seek(currentPosition);
+
+      StringBuilder cur = new StringBuilder();
+      for (int i = 0; i < recordSize; i += 3) {
+        byte[] hex = new byte[3];
+        db.read(hex);
+        int charv = Integer.parseInt(new String(hex), 16);
+        cur.append((char) charv);
+      }
+
+      switch (type) {
+        case USERS:
+          User u = (User) Misc.constructPerson(Misc.destructure(cur.toString()), User.class);
+          id.add(u.getUserId().substring(2));
+          break;
+
+        case ADMINS:
+          Admin a = (Admin) Misc.constructPerson(Misc.destructure(cur.toString()), Admin.class);
+          id.add(a.getAdminId().substring(2));
+          break;
+
+        case SURVEY_CREATORS:
+          SurveyCreator sc = (SurveyCreator) Misc.constructPerson(Misc.destructure(cur.toString()),
+              SurveyCreator.class);
+          id.add(sc.getScId().substring(2));
+          break;
+
+        case SURVEYS:
+          // TODO: do survey list
+          break;
+
+        case REVIEWS:
+          // TODO: do reviews list
+          break;
+
+        default:
+          break;
+      }
+
+      currentPosition += recordSize;
+    }
+    return id;
+
+  }
+
+  private static <T> ArrayList<T> exporter(dbFiles type) throws IOException, Exception {
+    long currentPosition = 0;
+    RandomAccessFile db = FilePicker.getdbFile(type);
+    ArrayList<T> obj = new ArrayList<T>();
+
+    while (currentPosition < db.length()) {
+      db.seek(currentPosition);
+
+      byte[] infobytes = new byte[RECORD_INFO_BUFFER];
+      db.read(infobytes);
+      int recordSize = Integer.parseInt(new String(infobytes).trim());
+
+      currentPosition += RECORD_INFO_BUFFER;
+      db.seek(currentPosition);
+
+      StringBuilder cur = new StringBuilder();
+      for (int i = 0; i < recordSize; i += 3) {
+        byte[] hex = new byte[3];
+        db.read(hex);
+        int charv = Integer.parseInt(new String(hex), 16);
+        cur.append((char) charv);
+      }
+
+      switch (type) {
+        case USERS:
+          User u = (User) Misc.constructPerson(Misc.destructure(cur.toString()), User.class);
+          obj.add((T) u);
+          break;
+
+        case ADMINS:
+          Admin a = (Admin) Misc.constructPerson(Misc.destructure(cur.toString()), Admin.class);
+          obj.add((T) a);
+          break;
+
+        case SURVEY_CREATORS:
+          SurveyCreator sc = (SurveyCreator) Misc.constructPerson(Misc.destructure(cur.toString()),
+              SurveyCreator.class);
+          obj.add((T) sc);
+          break;
+
+        case SURVEYS:
+          // TODO: do survey list
+          break;
+
+        case REVIEWS:
+          // TODO: do reviews list
+          break;
+
+        default:
+          break;
+      }
+
+      currentPosition += recordSize;
+    }
+    return obj;
+
   }
 
 }

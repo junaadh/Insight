@@ -1,9 +1,12 @@
 package helper;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import db.BinHandler;
+import db.FilePicker.dbFiles;
 import forms.Person;
 
 public class Misc {
@@ -79,12 +82,13 @@ public class Misc {
     GENDER(":5:"),
     EMAIL(":6:"),
     PHONENO(":7:"),
-    ISADMIN(":8:"),
-    ISSURVEYCREATOR(":9:"),
-    ADMINID(":10:"),
-    USERID(":11:"),
-    SCID(":12:"),
-    SCDEPT(":13");
+    NATIONALITY(":8:"),
+    ISADMIN(":9:"),
+    ISSURVEYCREATOR(":10:"),
+    ADMINID(":11:"),
+    USERID(":12:"),
+    SCID(":13:"),
+    SCDEPT(":14");
 
     private final String field;
 
@@ -96,5 +100,4 @@ public class Misc {
       return field;
     }
   }
-
 }
