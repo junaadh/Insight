@@ -62,6 +62,8 @@ public class DashController implements Initializable {
     BinHandler handler = new BinHandler();
     Person p = Session.getInstance().getPerson();
     String role = Session.getInstance().role();
+    searchList = new ListView<String>();
+    usermap = BinHandler.loadUser();
 
     ObservableList userKeys = FXCollections.observableArrayList(usermap.keySet());
     FilteredList<String> filtered = new FilteredList<String>(userKeys);
@@ -73,10 +75,8 @@ public class DashController implements Initializable {
 
     searchList.managedProperty().bind(searchList.visibleProperty());
     searchList.visibleProperty().bind(searchField.focusedProperty());
+    // TODO: hide default view
     mainView.getChildren().add(searchList);
-
-    searchList = new ListView<String>();
-    usermap = BinHandler.loadUser();
 
     nameField.setText(p.getFullname());
     roleField.setText(role);

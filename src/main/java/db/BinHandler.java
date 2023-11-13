@@ -28,7 +28,7 @@ public class BinHandler {
         create(dbFiles.PERSON, data);
         return create(dbFiles.USERS, data) ? "User added successfully" : null;
       } catch (IOException e) {
-        System.out.println("ERROR: Failed to create user: " + e.getStackTrace());
+        System.out.println("ERROR: Failed to create user: " + e.getMessage());
       }
       return null;
     }
@@ -43,7 +43,7 @@ public class BinHandler {
       create(dbFiles.PERSON, data);
       return create(dbFiles.ADMINS, data) ? "Admin added successfully" : null;
     } catch (IOException e) {
-      System.out.println("ERROR: Failed to create admin: " + e.getStackTrace());
+      System.out.println("ERROR: Failed to create admin: " + e.getMessage());
     }
     return null;
   }
@@ -57,7 +57,7 @@ public class BinHandler {
       create(dbFiles.PERSON, data);
       return create(dbFiles.SURVEY_CREATORS, data) ? "SurveyCreator added successfully" : null;
     } catch (IOException e) {
-      System.out.println("ERROR: Failed to create survey creator: " + e.getStackTrace());
+      System.out.println("ERROR: Failed to create survey creator: " + e.getMessage());
     }
     return null;
   }
@@ -79,7 +79,7 @@ public class BinHandler {
       delete(dbFiles.PERSON, data);
       return delete(dbFiles.USERS, data);
     } catch (IOException e) {
-      System.out.println("ERROR: Failed to remove user: " + e.getStackTrace());
+      System.out.println("ERROR: Failed to remove user: " + e.getMessage());
     }
     return false;
   }
@@ -90,7 +90,7 @@ public class BinHandler {
       delete(dbFiles.PERSON, data);
       return delete(dbFiles.ADMINS, data);
     } catch (IOException e) {
-      System.out.println("ERROR: Failed to remove admin: " + e.getStackTrace());
+      System.out.println("ERROR: Failed to remove admin: " + e.getMessage());
     }
     return false;
   }
@@ -101,7 +101,7 @@ public class BinHandler {
       delete(dbFiles.PERSON, data);
       return delete(dbFiles.SURVEY_CREATORS, data);
     } catch (IOException e) {
-      System.out.println("ERROR: Failed to remove surevey creator: " + e.getStackTrace());
+      System.out.println("ERROR: Failed to remove surevey creator: " + e.getMessage());
     }
     return false;
   }
@@ -123,9 +123,9 @@ public class BinHandler {
       String[] results = Misc.destructure(read(dbFiles.PERSON, queryStr));
       return Misc.constructPerson(results, Person.class);
     } catch (IOException e) {
-      System.out.println("ERROR: Failed fetching data from db: " + e.getStackTrace());
+      System.out.println("ERROR: Failed fetching data from db: " + e.getMessage());
     } catch (Exception er) {
-      System.out.println("ERROR: Failed fetching data from db: " + er.getStackTrace());
+      System.out.println("ERROR: Failed fetching data from db: " + er.getMessage());
     }
     return null;
   }
@@ -136,9 +136,9 @@ public class BinHandler {
       String[] results = Misc.destructure(read(dbFiles.USERS, queryStr));
       return (User) Misc.constructPerson(results, User.class);
     } catch (IOException e) {
-      System.out.println("ERROR: Failed fetching data from db: " + e.getStackTrace());
+      System.out.println("ERROR: Failed fetching data from db: " + e.getMessage());
     } catch (Exception er) {
-      System.out.println("ERROR: Failed fetching data from db: " + er.getStackTrace());
+      System.out.println("ERROR: Failed fetching data from db: " + er.getMessage());
     }
     return null;
   }
@@ -149,9 +149,9 @@ public class BinHandler {
       String[] results = Misc.destructure(read(dbFiles.ADMINS, queryStr));
       return (Admin) Misc.constructPerson(results, Admin.class);
     } catch (IOException e) {
-      System.out.println("ERROR: Failed fetcing data from db: " + e.getStackTrace());
+      System.out.println("ERROR: Failed fetcing data from db: " + e.getMessage());
     } catch (Exception er) {
-      System.out.println("ERROR: Failed fetching data from db: " + er.getStackTrace());
+      System.out.println("ERROR: Failed fetching data from db: " + er.getMessage());
     }
     return null;
   }
@@ -162,9 +162,9 @@ public class BinHandler {
       String[] results = Misc.destructure(read(dbFiles.SURVEY_CREATORS, queryStr));
       return (SurveyCreator) Misc.constructPerson(results, SurveyCreator.class);
     } catch (IOException e) {
-      System.out.println("ERROR: Failed fetching data from db: " + e.getStackTrace());
+      System.out.println("ERROR: Failed fetching data from db: " + e.getMessage());
     } catch (Exception er) {
-      System.out.println("ERROR: Failed fetching data from db: " + er.getStackTrace());
+      System.out.println("ERROR: Failed fetching data from db: " + er.getMessage());
     }
     return null;
   }
@@ -197,7 +197,7 @@ public class BinHandler {
         usr = searchUsers(prefix.NID, user.getNid());
       }
     } catch (IOException e) {
-      System.out.println("ERROR: Failed to update data: " + e.getStackTrace());
+      System.out.println("ERROR: Failed to update data: " + e.getMessage());
     }
     return usr;
   }
@@ -211,7 +211,7 @@ public class BinHandler {
         adn = searchAdmins(prefix.NID, admin.getNid());
       }
     } catch (IOException e) {
-      System.out.println("ERROR: Failed to update data: " + e.getStackTrace());
+      System.out.println("ERROR: Failed to update data: " + e.getMessage());
     }
     return adn;
   }
@@ -225,7 +225,7 @@ public class BinHandler {
         scr = searchSurveyCreator(prefix.NID, sc.getNid());
       }
     } catch (IOException e) {
-      System.out.println("ERROR: Failed to update data: " + e.getStackTrace());
+      System.out.println("ERROR: Failed to update data: " + e.getMessage());
     }
     return scr;
   }
@@ -246,7 +246,7 @@ public class BinHandler {
       // System.out.println(result + " " + username);
       return result != null ? true : false;
     } catch (IOException e) {
-      System.out.println("ERROR: Failed to fetch data from db: " + e.getStackTrace());
+      System.out.println("ERROR: Failed to fetch data from db: " + e.getMessage());
     }
     return false;
   }
@@ -258,7 +258,7 @@ public class BinHandler {
       // System.out.println(result + " " + nid);
       return result != null ? true : false;
     } catch (IOException e) {
-      System.out.println("ERROR: Failed to fetch data from db: " + e.getStackTrace());
+      System.out.println("ERROR: Failed to fetch data from db: " + e.getMessage());
     }
     return false;
   }
@@ -296,9 +296,9 @@ public class BinHandler {
         return "AX" + id;
       }
     } catch (IOException e) {
-      System.out.println("ERROR: Failed to generate id: " + e.getStackTrace());
+      System.out.println("ERROR: Failed to generate id: " + e.getMessage());
     } catch (Exception er) {
-      System.out.println("ERROR: Failed to generate id" + er.getStackTrace());
+      System.out.println("ERROR: Failed to generate id" + er.getMessage());
     }
     return null;
   }
@@ -314,9 +314,9 @@ public class BinHandler {
         return "SC" + id;
       }
     } catch (IOException e) {
-      System.out.println("ERROR: Failed to generate id: " + e.getStackTrace());
+      System.out.println("ERROR: Failed to generate id: " + e.getMessage());
     } catch (Exception er) {
-      System.out.println("ERROR: Failed to generate id" + er.getStackTrace());
+      System.out.println("ERROR: Failed to generate id" + er.getMessage());
     }
     return null;
   }
@@ -328,12 +328,13 @@ public class BinHandler {
       ArrayList<User> data = exporter(dbFiles.USERS);
 
       for (User u : data) {
-        userMap.put(u.getNid() + u.getUsername() + u.getUserId() + u.getFullname(), u);
+        userMap.put("NID: " + u.getNid() + " Username: " + u.getUsername() + " UserId: " + u.getUserId() + " Fullname: "
+            + u.getFullname(), u);
       }
     } catch (IOException e) {
-      System.out.println("ERROR: Failed to process data: " + e.getStackTrace());
+      System.out.println("ERROR: Failed to process data: " + e.getMessage());
     } catch (Exception er) {
-      System.out.println("ERROR: Failed to process data: " + er.getStackTrace());
+      System.out.println("ERROR: Failed to process data: " + er.getMessage());
     }
     return userMap;
   }
@@ -344,12 +345,14 @@ public class BinHandler {
       ArrayList<Admin> data = exporter(dbFiles.ADMINS);
 
       for (Admin u : data) {
-        adminMap.put(u.getNid() + u.getUsername() + u.getAdminId() + u.getFullname(), u);
+        // TODO: Format
+        adminMap.put("NID: " + u.getNid() + " Username: " + u.getUsername() + " AdminId: " + u.getAdminId()
+            + " Fullname: " + u.getFullname(), u);
       }
     } catch (IOException e) {
-      System.out.println("ERROR: Failed to process data: " + e.getStackTrace());
+      System.out.println("ERROR: Failed to process data: " + e.getMessage());
     } catch (Exception er) {
-      System.out.println("ERROR: Failed to process data: " + er.getStackTrace());
+      System.out.println("ERROR: Failed to process data: " + er.getMessage());
     }
     return adminMap;
   }
@@ -363,9 +366,9 @@ public class BinHandler {
         scMap.put(sc.getNid() + sc.getUsername() + sc.getScId() + sc.getFullname(), sc);
       }
     } catch (IOException e) {
-      System.out.println("ERROR: Failed to process data: " + e.getStackTrace());
+      System.out.println("ERROR: Failed to process data: " + e.getMessage());
     } catch (Exception er) {
-      System.out.println("ERROR: Failed to process data: " + er.getStackTrace());
+      System.out.println("ERROR: Failed to process data: " + er.getMessage());
     }
     return scMap;
   }
@@ -548,7 +551,7 @@ public class BinHandler {
 
   }
 
-  private static <T> ArrayList<User> exporter(dbFiles type) throws IOException, Exception {
+  private static <T> ArrayList<T> exporter(dbFiles type) throws IOException, Exception {
     long currentPosition = 0;
     RandomAccessFile db = FilePicker.getdbFile(type);
     ArrayList<T> obj = new ArrayList<T>();

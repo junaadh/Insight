@@ -78,7 +78,7 @@ public class SignUpController implements Initializable {
 		ObservableList<String> genders = FXCollections.observableArrayList("Male", "Female");
 		genderBox.setItems(genders);
 		// debuggin only
-		Session.getInstance().setIsAdmin();
+		// Session.getInstance().setIsAdmin();
 		dynamicHandler();
 	}
 
@@ -94,9 +94,6 @@ public class SignUpController implements Initializable {
 	@FXML
 	private void signInAction() throws IOException {
 		if (infoCheck()) {
-			if (Session.getInstance().isAdmin()) {
-				App.setRoot("primary");
-			}
 			App.setRoot("dash");
 		}
 	}
