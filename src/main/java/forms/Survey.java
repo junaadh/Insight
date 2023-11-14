@@ -2,35 +2,38 @@ package forms;
 
 import java.util.ArrayList;
 
-public class Survey{
-    private String surveyId;
-    private String scId;
-    private boolean isPublic;
-    private ArrayList<String>participants;
+public class Survey {
+  private String surveyId;
+  private String scId;
+  private boolean isPublic;
+  private ArrayList<String> participants;
 
-    public Survey(
-        String surveyId,
-        String scId,
-        boolean isPublic,
-        ArrayList<String>participants
-    ){
+  public Survey(
+      String surveyId,
+      String scId,
+      boolean isPublic,
+      ArrayList<String> participants) {
 
-    }
-    public String getsurveyId(){
-        return this.surveyId;
-    }
+  }
 
-    public String getscId(){
-        return this.scId;
-    }
+  public String getsurveyId() {
+    return this.surveyId;
+  }
 
-    public boolean getisPublic(){
-        return this.isPublic;
-    }
+  public String getscId() {
+    return this.scId;
+  }
 
-    public ArrayList<String> getparticipants(){
-        return participants;
-    }
+  public boolean getisPublic() {
+    return this.isPublic;
+  }
 
+  public ArrayList<String> getparticipants() {
+    return participants;
+  }
+
+  public void setIsPublic() {
+    this.isPublic = true;
+  }
 
 }

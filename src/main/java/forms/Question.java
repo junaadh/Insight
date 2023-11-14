@@ -1,41 +1,45 @@
 package forms;
 
 import java.util.ArrayList;
-import helper.Misc.prefix;
 
-public class Question extends Survey {
-    
-    private String qId;
-    private boolean isCompulsory;
-    private String surveyId;
-    private String qText;
-    private int qPos;
-    private ArrayList<String>qType;
+public class Question {
 
-    public Question(
-        String surveyId,
-        String scId,
-        boolean isPublic,
-        ArrayList<String>participants,
-        boolean isCompulsory,
-        String qId,
-        String qText,
-        int qPos,
-        ArrayList<String>qType){
-        super(surveyId, scId, isPublic, qType);
-        this.qId = qId;
-        this.isCompulsory = isCompulsory;
-        this.surveyId = surveyId;
-        this.qText = qText;
-        this.qPos = qPos;
-        this.qType = qType;
+  private String qId;
+  private boolean isCompulsory;
+  private String surveyId;
+  private String qText;
 
+  public Question(
+      String surveyId,
+      boolean isPublic,
+      boolean isCompulsory,
+      String qId,
+      String qText,
+      ArrayList<String> qType) {
+    this.qId = qId;
+    this.isCompulsory = isCompulsory;
+    this.surveyId = surveyId;
+    this.qText = qText;
 
+  }
 
+  public Question(String[] args) {
 
-        }
+  }
 
-    public Question(String[] args){
+  public String getQId() {
+    return this.qId;
+  }
 
-    }    
-}   
+  public boolean getIsCompulsory() {
+    return this.isCompulsory;
+  }
+
+  public String getSurveyId() {
+    return this.surveyId;
+  }
+
+  public String getQText() {
+    return this.qText;
+  }
+}
