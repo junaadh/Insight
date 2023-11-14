@@ -24,7 +24,7 @@ public class Review {
     }
 
     public String getdateCreated(){
-        return this.getdateCreated;
+        return this.dateCreated;
     }
 
     public String getuserId(){

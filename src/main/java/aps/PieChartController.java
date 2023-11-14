@@ -15,8 +15,6 @@ import javafx.scene.chart.PieChart;
 public class PieChartController implements Initializable {
 
     
-    public class PieChartController implements Initializable {
-        
         @FXML
         private PieChart pieChart;
     
@@ -59,4 +57,4 @@ public class PieChartController implements Initializable {
         }
     }
     
-}
+
