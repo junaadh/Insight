@@ -15,6 +15,21 @@ public class Review {
         this.userId = userId;
     }
 
+    public String getrevId(){
+        return this.revId;
+    }
+
+    public String getrevContent(){
+        return this.revContent;
+    }
+
+    public String getdateCreated(){
+        return this.getdateCreated;
+    }
+
+    public String getuserId(){
+        return this.userId;
+    }
     
     
 }
