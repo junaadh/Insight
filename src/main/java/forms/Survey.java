@@ -24,11 +24,11 @@ public class Survey {
     return this.scId;
   }
 
-  public boolean getisPublic() {
+  public boolean getIsPublic() {
     return this.isPublic;
   }
 
-  public ArrayList<String> getparticipants() {
+  public ArrayList<String> getParticipants() {
     return participants;
   }
 
