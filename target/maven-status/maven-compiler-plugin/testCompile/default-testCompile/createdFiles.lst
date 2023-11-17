@@ -1,0 +1,5 @@
+db/BinHandlerTest.class
+forms/QuestionTest.class
+forms/ReviewTest.class
+db/FilePickerTest.class
+forms/SurveyTest.class

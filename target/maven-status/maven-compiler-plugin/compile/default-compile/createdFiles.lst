@@ -1,5 +1,8 @@
 helper/Session.class
+forms/Review.class
 aps/LoginController.class
+forms/Question.class
+forms/Rank.class
 forms/Person.class
 aps/DashController.class
 forms/User.class
@@ -14,6 +17,7 @@ module-info.class
 db/BinHandler$1.class
 helper/Misc$prefix.class
 db/BinHandler.class
+forms/Survey.class
 aps/SurveyCreatorController.class
 helper/Hasher.class
 aps/LandingController.class

@@ -2,29 +2,33 @@ package forms;
 
 import java.util.ArrayList;
 
+import helper.Misc;
+import helper.Misc.prefix;
+
 public class Question {
 
-  private String qId;
-  private boolean isCompulsory;
   private String surveyId;
+  private boolean isCompulsory;
+  private String qId;
   private String qText;
 
   public Question(
       String surveyId,
-      boolean isPublic,
       boolean isCompulsory,
       String qId,
-      String qText,
-      ArrayList<String> qType) {
-    this.qId = qId;
-    this.isCompulsory = isCompulsory;
+      String qText) {
     this.surveyId = surveyId;
+    this.isCompulsory = isCompulsory;
+    this.qId = qId;
     this.qText = qText;
 
   }
 
   public Question(String[] args) {
-
+    this.surveyId = args[0];
+    this.isCompulsory = args[1].equals("true") ? true : false;
+    this.qId = args[2];
+    this.qText = args[3];
   }
 
   public String getQId() {
@@ -41,5 +45,14 @@ public class Question {
 
   public String getQText() {
     return this.qText;
+  }
+
+  public String buildInfo() {
+    StringBuilder cur = new StringBuilder();
+    cur.append(prefix.SURVEYID.getPrefix() + this.surveyId);
+    cur.append(prefix.ISCOMPULSORY.getPrefix() + Misc.boolString(this.isCompulsory));
+    cur.append(prefix.QID.getPrefix() + this.qId);
+    cur.append(prefix.QTEXT.getPrefix() + this.qText);
+    return cur.toString();
   }
 }

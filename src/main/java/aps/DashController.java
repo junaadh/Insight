@@ -58,6 +58,7 @@ public class DashController implements Initializable {
     App.setRoot("landing");
   }
 
+  @SuppressWarnings("unchecked")
   private void loadResources() {
     BinHandler handler = new BinHandler();
     Person p = Session.getInstance().getPerson();

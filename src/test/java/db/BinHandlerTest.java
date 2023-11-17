@@ -10,8 +10,6 @@ import org.junit.runners.MethodSorters;
 
 import static org.junit.Assert.assertTrue;
 
-import forms.Admin;
-import forms.Person;
 import forms.User;
 import helper.Misc.prefix;
 
@@ -32,7 +30,6 @@ public class BinHandlerTest {
 	@Test
 	public void TestBwrite2UserData() {
 		String test = handler.addUser(usz);
-		System.out.println(test);
 		assertTrue(test != null);
 	}
 
@@ -52,7 +49,6 @@ public class BinHandlerTest {
 	public void TestEupdateUserData() throws IOException {
 		User uszB = handler.updateUser(usz, "mail@mail.com", "mail@gmail.com", prefix.EMAIL);
 
-		// assertTrue(bool);
 		assertEquals(uszB.getEmail(), "mail@gmail.com");
 	}
 
@@ -67,12 +63,5 @@ public class BinHandlerTest {
 		boolean test = handler.deleteUser(userr);
 		assertTrue(test);
 	}
-
-	// @Test
-	// public void TestHreadUserDataUsername() {
-	// User userrA = handler.searchUsers(prefix.USERID, "UX00001");
-	// System.out.println(userrA.buildInfo());
-	// // handler.deleteUser(userrA);
-	// }
 
 }
