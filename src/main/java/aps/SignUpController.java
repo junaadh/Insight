@@ -87,14 +87,20 @@ public class SignUpController implements Initializable {
 		if (!Session.getInstance().isAdmin()) {
 			App.setRoot("login");
 		} else {
-			App.setRoot("dash");
+			App.setRoot("adminDash");
 		}
 	}
 
 	@FXML
 	private void signInAction() throws IOException {
 		if (infoCheck()) {
-			App.setRoot("dash");
+			if (Session.getInstance().isAdmin()) {
+				App.setRoot("adminDash");
+			} else if (Session.getInstance().isSurveyCreator()) {
+				App.setRoot("scDash");
+			} else {
+				App.setRoot("dash");
+			}
 		}
 	}
 

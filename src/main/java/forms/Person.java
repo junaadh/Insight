@@ -1,9 +1,10 @@
 package forms;
 
+import helper.Manipulator;
 import helper.Misc;
 import helper.Misc.prefix;
 
-public class Person {
+public class Person implements Manipulator {
 
   private String nid;
   private String username;

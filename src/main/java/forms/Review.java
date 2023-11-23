@@ -1,8 +1,9 @@
 package forms;
 
+import helper.Manipulator;
 import helper.Misc.prefix;
 
-public class Review {
+public class Review implements Manipulator {
 
   private String revId;
   private String revContent;

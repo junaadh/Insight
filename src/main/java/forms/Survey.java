@@ -2,10 +2,11 @@ package forms;
 
 import java.util.ArrayList;
 
+import helper.Manipulator;
 import helper.Misc;
 import helper.Misc.prefix;
 
-public class Survey {
+public class Survey implements Manipulator {
   private String surveyId;
   private String scId;
   private boolean isPublic;

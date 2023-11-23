@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="720.0" prefWidth="1220.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aps.SurveyCreationController">
+   <children>
+      <ScrollPane fitToWidth="true" layoutX="334.0" layoutY="-23.0" prefWidth="600.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="334.0" AnchorPane.rightAnchor="286.0" AnchorPane.topAnchor="-23.0">
+         <content>
+            <VBox alignment="TOP_CENTER" prefWidth="600.0" spacing="60.0">
+               <children>
+                  <HBox alignment="CENTER_LEFT" spacing="150.0">
+                     <children>
+                        <Button id="icon-button" fx:id="backButton" graphicTextGap="0.0" maxWidth="40.0" minWidth="40.0" mnemonicParsing="false" onAction="#switchBack" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: #63c5da; -fx-background-radius: 100px;">
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                           <graphic>
+                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true">
+                                 <image>
+                                    <Image url="@pics/back.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Create Survey" textAlignment="CENTER" wrappingWidth="204.363037109375">
+                           <font>
+                              <Font size="32.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </Text>
+                     </children>
+                  </HBox>
+                  <VBox fx:id="vbox" alignment="CENTER" prefHeight="527.0" prefWidth="600.0" spacing="32.0" style="-fx-background-color: #ECEEEF; -fx-background-radius: 24;">
+                     <padding>
+                        <Insets bottom="32.0" left="32.0" right="32.0" top="32.0" />
+                     </padding>
+                     <children>
+                        <TextField fx:id="surveyId" />
+                        <VBox fx:id="questionBox" prefHeight="6.0" prefWidth="522.0" />
+                        <ComboBox fx:id="selector" prefWidth="150.0" promptText="Choose Question Type" />
+                     </children>
+                  </VBox>
+               </children>
+               <padding>
+                  <Insets bottom="60.0" top="60.0" />
+               </padding>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </children>
+</AnchorPane>

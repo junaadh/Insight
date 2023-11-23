@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="720.0" prefWidth="1220.0" stylesheets="styles.css" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aps.DashController">
+<BorderPane prefHeight="720.0" prefWidth="1220.0" stylesheets="styles.css" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aps.ScDashController">
    <top>
       <HBox alignment="CENTER_LEFT" prefHeight="51.0" prefWidth="1148.0" spacing="250.0" style="-fx-background-radius: 15; -fx-background-color: #e1e0e0;" BorderPane.alignment="CENTER">
          <children>
@@ -152,10 +152,30 @@
                   </Button>
                </children>
             </HBox>
-            <VBox alignment="BOTTOM_LEFT" prefHeight="39.0" prefWidth="230.0" spacing="10.0">
+            <VBox alignment="BOTTOM_LEFT" prefHeight="37.0" prefWidth="230.0" spacing="10.0">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
+               <children>
+                  <Button fx:id="createSurveyButton" mnemonicParsing="false" onAction="#createSurvey" prefHeight="26.0" prefWidth="135.0" style="-fx-background-color: transparent;" text="Create Survey" textFill="#35b8d4">
+                     <graphic>
+                        <ImageView fitHeight="21.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@pics/mail.fill.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="approveButton1" mnemonicParsing="false" prefHeight="26.0" prefWidth="124.0" style="-fx-background-color: transparent;" text="My Surveys" textFill="#35b8d4">
+                     <graphic>
+                        <ImageView fitHeight="21.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@pics/mail.fill.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
                <padding>
                   <Insets left="50.0" />
                </padding>

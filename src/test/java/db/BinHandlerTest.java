@@ -10,6 +10,7 @@ import org.junit.runners.MethodSorters;
 
 import static org.junit.Assert.assertTrue;
 
+import forms.Admin;
 import forms.User;
 import helper.Misc.prefix;
 
@@ -58,6 +59,7 @@ public class BinHandlerTest {
 		assertTrue(test);
 	}
 
+	
 	@Test
 	public void TestGdelete2UserData() {
 		boolean test = handler.deleteUser(userr);

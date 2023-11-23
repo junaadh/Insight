@@ -1,11 +1,10 @@
 package forms;
 
-import java.util.ArrayList;
-
+import helper.Manipulator;
 import helper.Misc;
 import helper.Misc.prefix;
 
-public class Question {
+public class Question implements Manipulator {
 
   private String surveyId;
   private boolean isCompulsory;

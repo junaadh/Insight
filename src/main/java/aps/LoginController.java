@@ -54,9 +54,9 @@ public class LoginController implements Initializable {
 
     Session.getInstance().setPerson(person);
     if (person.getIsAdmin()) {
-      App.setRoot("dash");
+      App.setRoot("adminDash");
     } else if (person.getIsSurveyCreator()) {
-      App.setRoot("sCreator");
+      App.setRoot("scDash");
     } else {
       App.setRoot("dash");
     }

@@ -17,6 +17,12 @@ public class Rank extends Question {
     this.ranked = ranked;
   }
 
+  public Rank(String[] args) {
+    super(args);
+    this.options = Misc.stringArrayList(args[4]);
+    this.ranked = Misc.stringHashMap(args[5]);
+  }
+
   public ArrayList<String> getOptions() {
     return this.options;
   }

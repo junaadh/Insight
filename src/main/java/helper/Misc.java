@@ -137,7 +137,13 @@ public class Misc {
     ISCOMPULSORY(":22:"),
     QTEXT(":23:"),
     OPTIONS(":24:"),
-    RANKED(":25:");
+    RANKED(":25:"),
+    ANSWER(":26:"),
+    CHOICE(":27:"),
+    BOOLCHOICE(":28:"),
+    RATING(":29:"),
+    RESPONSES(":30:"),
+    RESPONSEID(":31:");
 
     private final String field;
 

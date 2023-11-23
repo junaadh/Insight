@@ -19,7 +19,7 @@ public class SurveyCreator extends Person {
       String nationality,
       String scId,
       String scDept) {
-    super(nid, username, fullname, password, age, gender, email, phoneNo, nationality, false, false);
+    super(nid, username, fullname, password, age, gender, email, phoneNo, nationality, false, true);
     this.scId = scId;
     this.scDept = scDept;
   }

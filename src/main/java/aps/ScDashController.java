@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
 import db.BinHandler;
 import forms.Person;
 import forms.Survey;
-import forms.User;
+import forms.SurveyCreator;
 import helper.Javax;
 import helper.Session;
 import helper.Misc.prefix;
@@ -20,7 +20,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
-public class DashController implements Initializable {
+public class ScDashController implements Initializable {
   @FXML
   private Text nameField;
 
@@ -55,17 +55,22 @@ public class DashController implements Initializable {
     App.setRoot("landing");
   }
 
+  @FXML
+  private void createSurvey() throws IOException {
+    App.setRoot("surveyCreation");
+  }
+
   private void loadResources() {
     BinHandler handler = new BinHandler();
 
     Person p = Session.getInstance().getPerson();
-    User a = p instanceof User ? (User) p : null;
+    SurveyCreator a = p instanceof SurveyCreator ? (SurveyCreator) p : null;
     if (a == null) {
-      a = handler.searchUsers(prefix.NID, p.getNid());
+      a = handler.searchSurveyCreator(prefix.NID, p.getNid());
     }
     roleField.setText(Session.getInstance().role());
     nameField.setText(p.getFullname());
-    idField.setText(a.getUserId());
+    idField.setText(a.getScId());
 
     searchList = new TableView<Survey>();
     surveymap = BinHandler.loadSurvey();

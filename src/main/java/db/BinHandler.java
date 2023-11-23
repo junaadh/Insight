@@ -11,15 +11,22 @@ import db.FilePicker.dbFiles;
 import forms.Admin;
 import forms.Person;
 import forms.Question;
+import forms.Response;
 import forms.Review;
 import forms.Survey;
 import forms.SurveyCreator;
 import forms.User;
+import helper.Manipulator;
 import helper.Misc;
 import helper.RecordInfo;
 import helper.Misc.prefix;
 
-public class BinHandler {
+public class BinHandler implements Manipulator {
+
+  @Override
+  public String buildInfo() {
+    return null;
+  }
 
   // add wrapper methods
   public String addUser(User user) {
@@ -101,6 +108,18 @@ public class BinHandler {
     return null;
   }
 
+  public String addResponse(Response r) {
+    String data = r.buildInfo();
+    try {
+      if (read(dbFiles.RESPONSES, r.getResponseId()) == null) {
+        return create(dbFiles.RESPONSES, data) ? "Response saved succussfully" : null;
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to create response");
+    }
+    return null;
+  }
+
   // delete wrapper methods
   public boolean deleteUser(User user) {
     String data = prefix.NID.getPrefix() + user.getNid();
@@ -161,6 +180,16 @@ public class BinHandler {
       return delete(dbFiles.QUESTIONS, data);
     } catch (IOException e) {
       System.out.println("ERROR: Failed to remove question: " + e.getMessage());
+    }
+    return false;
+  }
+
+  public boolean deleteResponse(Response r) {
+    String data = prefix.RESPONSEID.getPrefix() + r.getResponseId();
+    try {
+      return delete(dbFiles.RESPONSES, data);
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to remove response: " + e.getMessage());
     }
     return false;
   }
@@ -258,6 +287,20 @@ public class BinHandler {
     return null;
   }
 
+  public Response searchResponse(prefix field, String query) {
+    String queryStr = field.getPrefix() + query;
+    try {
+      String[] results = Misc.destructure(read(dbFiles.RESPONSES, queryStr));
+      return Misc.construct(results, Response.class);
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed fetching data from db: " + e.getMessage());
+    } catch (Exception er) {
+      System.out.println("ERROR: Failed fetching datay from db: " + er.getMessage());
+    }
+    return null;
+
+  }
+
   // update wrapper methods
   public User updateUser(User user, String oldStr, String newString, prefix field) {
     User usr = null;
@@ -342,6 +385,20 @@ public class BinHandler {
       System.out.println("ERROR: Failed to update data: " + e.getMessage());
     }
     return null;
+  }
+
+  public Response updateResponse(Response r, String oldStr, String newStr, prefix field) {
+    String pref = field.getPrefix();
+    try {
+      Boolean bool = update(dbFiles.RESPONSES, pref + oldStr, pref + newStr, r.getResponseId());
+      if (bool) {
+        return searchResponse(prefix.RESPONSEID, r.getResponseId());
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to update data: " + e.getMessage());
+    }
+    return null;
+
   }
 
   // // Misc generic searches
@@ -478,7 +535,40 @@ public class BinHandler {
     return null;
   }
 
+  public String genResponseId() {
+    String id;
+    try {
+      ArrayList<String> ids = exportinfo(dbFiles.RESPONSES);
+      Collections.sort(ids);
+      String last = ids.isEmpty() ? "0" : ids.get(ids.size() - 1);
+      if (Misc.isIntegar(last)) {
+        id = String.format("%05d", Integer.parseInt(last) + 1);
+        return "RS" + id;
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to generate id: " + e.getMessage());
+    } catch (Exception er) {
+      System.out.println("ERROR: Failed to generate id" + er.getMessage());
+    }
+    return null;
+  }
+
   // loading wrappers
+  public static Map<String, Person> loadPerson() {
+    Map<String, Person> userMap = new HashMap<String, Person>();
+    try {
+      ArrayList<Person> data = exporter(dbFiles.PERSON);
+      for (Person u : data) {
+        userMap.put(u.getNid() + "," + u.getFullname() + "," + u.getUsername(), u);
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to process data: " + e.getMessage());
+    } catch (Exception er) {
+      System.out.println("ERROR: Failed to process data: " + er.getMessage());
+    }
+    return userMap;
+  }
+
   public static Map<String, User> loadUser() {
     Map<String, User> userMap = new HashMap<String, User>();
     try {
@@ -535,7 +625,7 @@ public class BinHandler {
       ArrayList<Survey> data = exporter(dbFiles.SURVEYS);
 
       for (Survey s : data) {
-        sMap.put("SurveyID: " + s.getsurveyId() + "SurCreator Id: " + s.getscId(), s);
+        sMap.put(s.getsurveyId() + "," + s.getscId(), s);
       }
     } catch (IOException e) {
       System.out.println("ERROR: Failed to process data: " + e.getMessage());
@@ -551,7 +641,7 @@ public class BinHandler {
       ArrayList<Review> data = exporter(dbFiles.REVIEWS);
 
       for (Review r : data) {
-        rMap.put("ReviewID: " + r.getRevId() + " UserId: " + r.getUserId(), r);
+        rMap.put(r.getRevId() + "," + r.getUserId(), r);
       }
     } catch (IOException e) {
       System.out.println("ERROR: Failed to process data: " + e.getMessage());
@@ -568,6 +658,22 @@ public class BinHandler {
 
       for (Question q : data) {
         qMap.put("QustionID: " + q.getQId() + "SurveyID: " + q.getSurveyId(), q);
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to process data: " + e.getMessage());
+    } catch (Exception er) {
+      System.out.println("ERROR: Failed to process data: " + er.getMessage());
+    }
+    return qMap;
+  }
+
+  public static Map<String, Response> loadResponse() {
+    Map<String, Response> qMap = new HashMap<String, Response>();
+    try {
+      ArrayList<Response> data = exporter(dbFiles.RESPONSES);
+
+      for (Response q : data) {
+        qMap.put(q.getResponseId() + "," + q.getNid() + "," + q.getSurveyId(), q);
       }
     } catch (IOException e) {
       System.out.println("ERROR: Failed to process data: " + e.getMessage());
@@ -744,6 +850,11 @@ public class BinHandler {
           id.add(q.getQId().substring(2));
           break;
 
+        case RESPONSES:
+          Response rs = Misc.construct(Misc.destructure(cur.toString()), Response.class);
+          id.add(rs.getResponseId().substring(2));
+          break;
+
         default:
           break;
       }
@@ -779,6 +890,11 @@ public class BinHandler {
       }
 
       switch (type) {
+        case PERSON:
+          Person p = Misc.constructPerson(Misc.destructure(cur.toString()), Person.class);
+          obj.add((T) p);
+          break;
+
         case USERS:
           User u = (User) Misc.constructPerson(Misc.destructure(cur.toString()), User.class);
           obj.add((T) u);
@@ -808,6 +924,11 @@ public class BinHandler {
         case QUESTIONS:
           Question q = Misc.construct(Misc.destructure(cur.toString()), Question.class);
           obj.add((T) q);
+          break;
+
+        case RESPONSES:
+          Response rs = Misc.construct(Misc.destructure(cur.toString()), Response.class);
+          obj.add((T) rs);
           break;
 
         default:

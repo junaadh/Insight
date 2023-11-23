@@ -1,3 +1,4 @@
+@SuppressWarnings("UnstableApiUsage")
 module aps {
   requires transitive javafx.graphics;
   requires javafx.controls;
@@ -5,6 +6,7 @@ module aps {
   requires jbcrypt;
 
   opens aps to javafx.fxml;
+  opens forms;
 
   exports aps;
 }
