@@ -52,6 +52,7 @@ public class SurveyController implements Initializable {
   Map<String, Question> qMap = BinHandler.loadQuestion();
   ArrayList<Question> qList = handler.valuesToList(qMap);
   ArrayList<Question> filtered = new ArrayList<>();
+  Map<String, Response> loadedResp = BinHandler.loadResponse();
 
   @Override
   public void initialize(URL location, ResourceBundle resource) {
@@ -73,23 +74,36 @@ public class SurveyController implements Initializable {
         filtered.add(q);
       }
     }
-    for (Question q : filtered) {
-      createSurvey(q);
-    }
-    Button creatButton = new Button("Submit Response");
-    creatButton.setPadding(new Insets(15, 30, 15, 30));
-    creatButton.setStyle("-fx-background-color: " + btnColor + "; -fx-background-radius: 50");
-    mainView.getChildren().add(creatButton);
-    creatButton.setOnAction(event -> {
-      for (Map.Entry<String, String> entry : responses.entrySet()) {
-        String qid = entry.getKey();
-        String response = entry.getValue();
-
-        Response resp = new Response(handler.genResponseId(), qid, Session.getInstance().getPerson().getNid(), surveyId,
-            response);
-        handler.addResponse(resp);
+    Response respCheck = handler.searchResponse(prefix.SURVEYID, surveyId);
+    if (respCheck != null) {
+      for (Question q : filtered) {
+        createSurveyWithResponse(q);
       }
-    });
+    } else {
+      for (Question q : filtered) {
+        createSurvey(q);
+      }
+      Button creatButton = new Button("Submit Response");
+      creatButton.setPadding(new Insets(15, 30, 15, 30));
+      creatButton.setStyle("-fx-background-color: " + btnColor + "; -fx-background-radius: 50");
+      mainView.getChildren().add(creatButton);
+      creatButton.setOnAction(event -> {
+        for (Map.Entry<String, String> entry : responses.entrySet()) {
+          String qid = entry.getKey();
+          String response = entry.getValue();
+
+          Response resp = new Response(handler.genResponseId(), qid, Session.getInstance().getPerson().getNid(),
+              surveyId,
+              response);
+          handler.addResponse(resp);
+        }
+        try {
+          goBack();
+        } catch (IOException e) {
+          System.out.println("ERROR: Failed to change scene: " + e.getMessage());
+        }
+      });
+    }
   }
 
   @FXML
@@ -227,7 +241,83 @@ public class SurveyController implements Initializable {
     } else if (type.equals("Rating")) {
       // TODO:
     } else if (type.equals("Likert")) {
+      // TODO:
+    } else if (type.equals("Polar")) {
+      // TODO:
+    }
+  }
 
+  private void createSurveyWithResponse(Question q) {
+    String type = questiontype(q);
+
+    if (type.equals("Openended") || type.equals("Demographic") || type.equals("Opinion")) {
+      VBox container = new VBox(16);
+      container.setPadding(new Insets(16));
+      Text question = new Text();
+      TextField answer = new TextField();
+      container.getChildren().addAll(question, answer);
+      container.setStyle("-fx-background-color: " + color + "; -fx-background-radius: 15");
+      // - container.setStyle("-fx-background-color: " + color);
+      // container.setStyle("-fx-background-radius: 15");
+      mainView.getChildren().add(container);
+      answer.setStyle("-fx-background-color: transparent; -fx-border-color: #000; -fx-border-radius: 15");
+      Response r = loadedResp.get(q.getQId());
+      if (r != null) {
+        answer.setText(r.getReponses());
+      }
+      if (q.getQtype().toLowerCase().equals("Openended".toLowerCase())) {
+        Openended open = constructQuestion(q);
+        question.setText(open.getQText());
+      } else if (q.getQtype().toLowerCase().equals("Demographic".toLowerCase())) {
+        Demographic demo = constructQuestion(q);
+        question.setText(demo.getQText());
+      } else if (q.getQtype().toLowerCase().equals("Opinion".toLowerCase())) {
+        Opinion op = constructQuestion(q);
+        question.setText(op.getQText());
+      }
+    } else if (type.equals("MCQ") || type.equals("Rank")) {
+      VBox container = new VBox(16);
+      container.setPadding(new Insets(16));
+      container.setStyle("-fx-background-color: " + color + "; -fx-background-radius: 15");
+      Text question = new Text();
+      RadioButton opt1 = new RadioButton();
+      RadioButton opt2 = new RadioButton();
+      RadioButton opt3 = new RadioButton();
+      RadioButton opt4 = new RadioButton();
+      container.getChildren().addAll(question, opt1, opt2, opt3, opt4);
+      mainView.getChildren().add(container);
+
+      if (q.getQtype().toLowerCase().equals("MCQ".toLowerCase())) {
+        Mcq mcq = constructQuestion(q);
+        question.setText(q.getQText());
+        opt1.setText(mcq.getMcqOptions().get(0));
+        opt2.setText(mcq.getMcqOptions().get(1));
+        opt3.setText(mcq.getMcqOptions().get(2));
+        opt4.setText(mcq.getMcqOptions().get(3));
+      } else if (q.getQtype().toLowerCase().equals("Rank".toLowerCase())) {
+        Rank rank = constructQuestion(q);
+        question.setText(rank.getQText());
+        opt1.setText(rank.getOptions().get(0));
+        opt2.setText(rank.getOptions().get(1));
+        opt3.setText(rank.getOptions().get(2));
+        opt4.setText(rank.getOptions().get(3));
+      }
+
+      Response r = loadedResp.get(q.getQId());
+      if (r != null) {
+        for (RadioButton opt : new RadioButton[] { opt1, opt2, opt3, opt4 }) {
+          if (opt.getText().equals(r.getReponses())) {
+            opt.setSelected(true);
+          }
+        }
+      }
+
+    } else if (type.equals("Rating")) {
+      // TODO:
+    } else if (type.equals("Likert")) {
+      // TODO:
+    } else if (type.equals("Polar")) {
+      // TODO:
     }
   }
 }

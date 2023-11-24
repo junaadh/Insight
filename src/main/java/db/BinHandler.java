@@ -677,7 +677,7 @@ public class BinHandler implements Manipulator {
       ArrayList<Response> data = exporter(dbFiles.RESPONSES);
 
       for (Response q : data) {
-        qMap.put(q.getResponseId() + "," + q.getNid() + "," + q.getSurveyId(), q);
+        qMap.put(q.getResponseId() + "," + q.getNid() + "," + q.getSurveyId() + "," + q.getQId(), q);
       }
     } catch (IOException e) {
       System.out.println("ERROR: Failed to process data: " + e.getMessage());
