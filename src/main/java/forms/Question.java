@@ -10,16 +10,19 @@ public class Question implements Manipulator {
   private boolean isCompulsory;
   private String qId;
   private String qText;
+  private String qType;
 
   public Question(
       String surveyId,
       boolean isCompulsory,
       String qId,
-      String qText) {
+      String qText,
+      String qtype) {
     this.surveyId = surveyId;
     this.isCompulsory = isCompulsory;
     this.qId = qId;
     this.qText = qText;
+    this.qType = qtype;
 
   }
 
@@ -28,6 +31,7 @@ public class Question implements Manipulator {
     this.isCompulsory = args[1].equals("true") ? true : false;
     this.qId = args[2];
     this.qText = args[3];
+    this.qType = args[4];
   }
 
   public String getQId() {
@@ -46,12 +50,17 @@ public class Question implements Manipulator {
     return this.qText;
   }
 
+  public String getQtype() {
+    return this.qType;
+  }
+
   public String buildInfo() {
     StringBuilder cur = new StringBuilder();
     cur.append(prefix.SURVEYID.getPrefix() + this.surveyId);
     cur.append(prefix.ISCOMPULSORY.getPrefix() + Misc.boolString(this.isCompulsory));
     cur.append(prefix.QID.getPrefix() + this.qId);
     cur.append(prefix.QTEXT.getPrefix() + this.qText);
+    cur.append(prefix.QTYPE.getPrefix() + this.qType);
     return cur.toString();
   }
 }

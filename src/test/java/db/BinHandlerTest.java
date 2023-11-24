@@ -10,7 +10,6 @@ import org.junit.runners.MethodSorters;
 
 import static org.junit.Assert.assertTrue;
 
-import forms.Admin;
 import forms.User;
 import helper.Misc.prefix;
 

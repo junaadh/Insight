@@ -75,7 +75,7 @@ public class BinHandler implements Manipulator {
   public String addSurvey(Survey s) {
     String data = s.buildInfo();
     try {
-      if (read(dbFiles.SURVEYS, s.getsurveyId()) == null) {
+      if (read(dbFiles.SURVEYS, s.getSurveyId()) == null) {
         return create(dbFiles.SURVEYS, data) ? "Survey added successfully" : null;
       }
     } catch (IOException e) {
@@ -96,8 +96,9 @@ public class BinHandler implements Manipulator {
     return null;
   }
 
-  public String addQuestions(Question q) {
+  public <T extends Question> String addQuestions(T q) {
     String data = q.buildInfo();
+    // System.out.println(data);
     try {
       if (read(dbFiles.QUESTIONS, q.getQId()) == null) {
         return create(dbFiles.QUESTIONS, data) ? "Question added succesfully" : null;
@@ -155,7 +156,7 @@ public class BinHandler implements Manipulator {
   }
 
   public boolean deleteSurvey(Survey s) {
-    String data = prefix.SURVEYID.getPrefix() + s.getsurveyId();
+    String data = prefix.SURVEYID.getPrefix() + s.getSurveyId();
     try {
       return delete(dbFiles.SURVEYS, data);
     } catch (IOException e) {
@@ -307,8 +308,9 @@ public class BinHandler implements Manipulator {
     String pref = field.getPrefix();
     try {
       Boolean bool = update(dbFiles.USERS, pref + oldStr, pref + newString, user.getNid());
+      Boolean bool2 = update(dbFiles.PERSON, pref + oldStr, pref + newString, user.getNid());
       // System.out.println("1");
-      if (bool) {
+      if (bool && bool2) {
         // System.out.println("2");
         usr = searchUsers(prefix.NID, user.getNid());
       }
@@ -323,7 +325,8 @@ public class BinHandler implements Manipulator {
     String pref = field.getPrefix();
     try {
       Boolean bool = update(dbFiles.ADMINS, pref + oldStr, pref + newString, admin.getNid());
-      if (bool) {
+      Boolean bool2 = update(dbFiles.PERSON, pref + oldStr, pref + newString, admin.getNid());
+      if (bool && bool2) {
         adn = searchAdmins(prefix.NID, admin.getNid());
       }
     } catch (IOException e) {
@@ -337,7 +340,8 @@ public class BinHandler implements Manipulator {
     String pref = field.getPrefix();
     try {
       Boolean bool = update(dbFiles.SURVEY_CREATORS, pref + oldStr, pref + newString, sc.getNid());
-      if (bool) {
+      Boolean bool2 = update(dbFiles.PERSON, pref + oldStr, pref + newString, sc.getNid());
+      if (bool && bool2) {
         scr = searchSurveyCreator(prefix.NID, sc.getNid());
       }
     } catch (IOException e) {
@@ -350,9 +354,9 @@ public class BinHandler implements Manipulator {
     Survey sc = null;
     String pref = field.getPrefix();
     try {
-      Boolean bool = update(dbFiles.SURVEYS, pref + oldStr, pref + newStr, s.getsurveyId());
+      Boolean bool = update(dbFiles.SURVEYS, pref + oldStr, pref + newStr, s.getSurveyId());
       if (bool) {
-        sc = searchSurveys(prefix.SURVEYID, s.getsurveyId());
+        sc = searchSurveys(prefix.SURVEYID, s.getSurveyId());
       }
     } catch (IOException e) {
       System.out.println("ERROR: Failed to update data: " + e.getMessage());
@@ -625,7 +629,7 @@ public class BinHandler implements Manipulator {
       ArrayList<Survey> data = exporter(dbFiles.SURVEYS);
 
       for (Survey s : data) {
-        sMap.put(s.getsurveyId() + "," + s.getscId(), s);
+        sMap.put(s.getSurveyId() + "," + s.getScId(), s);
       }
     } catch (IOException e) {
       System.out.println("ERROR: Failed to process data: " + e.getMessage());
@@ -837,7 +841,7 @@ public class BinHandler implements Manipulator {
 
         case SURVEYS:
           Survey s = Misc.construct(Misc.destructure(cur.toString()), Survey.class);
-          id.add(s.getsurveyId().substring(2));
+          id.add(s.getSurveyId().substring(2));
           break;
 
         case REVIEWS:

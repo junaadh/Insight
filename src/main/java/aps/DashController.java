@@ -70,9 +70,10 @@ public class DashController implements Initializable {
     searchList = new TableView<Survey>();
     surveymap = BinHandler.loadSurvey();
     ArrayList<Survey> map = handler.valuesToList(surveymap);
+    Survey s = new Survey();
 
-    // Javax.initializeTableColumn(map.get(0).getHeaders(), searchList);
-    // Javax.initializeTableRow(map, searchList);
+    Javax.initializeTableColumn(s.getHeaders(), searchList);
+    Javax.initializeTableRow(map, searchList);
 
     searchList.managedProperty().bind(searchList.visibleProperty());
     searchList.visibleProperty().bind(searchField.focusedProperty().or(searchList.focusedProperty()));
@@ -89,8 +90,18 @@ public class DashController implements Initializable {
   private void handleClick() {
     Survey selectedItem = searchList.getSelectionModel().getSelectedItem();
     if (selectedItem != null) {
-      System.out.println("Selected: " + selectedItem.getsurveyId());
+      System.out.println("Selected: " + selectedItem.getSurveyId());
     }
+  }
+
+  @FXML
+  private void changeSetting() throws IOException {
+    App.setRoot("settings");
+  }
+
+  @FXML
+  private void switchToSurveys() throws IOException {
+    App.setRoot("list");
   }
 
 }

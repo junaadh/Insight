@@ -26,6 +26,11 @@ public class User extends Person {
 		this.userId = args[12];
 	}
 
+	public User() {
+		// dummy
+		super();
+	}
+
 	public String getUserId() {
 		return this.userId;
 	}

@@ -132,7 +132,7 @@
                   <Insets top="10.0" />
                </VBox.margin>
                <children>
-                  <Button fx:id="surveyButton" mnemonicParsing="false" prefHeight="35.0" prefWidth="85.0" style="-fx-background-color: #63c5da; -fx-background-radius: 10;" text="Surveys" textFill="WHITE">
+                  <Button fx:id="surveyButton" mnemonicParsing="false" onAction="#switchToSurvey" prefHeight="35.0" prefWidth="85.0" style="-fx-background-color: #63c5da; -fx-background-radius: 10;" text="Surveys" textFill="WHITE">
                      <graphic>
                         <ImageView fitHeight="18.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -141,7 +141,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="surveyButton1" mnemonicParsing="false" prefHeight="35.0" prefWidth="85.0" style="-fx-background-color: #63c5da; -fx-background-radius: 10;" text="Reviews" textFill="WHITE">
+                  <Button mnemonicParsing="false" onAction="#switchToUser" prefHeight="35.0" prefWidth="85.0" style="-fx-background-color: #63c5da; -fx-background-radius: 10;" text="Users" textFill="WHITE">
                      <graphic>
                         <ImageView fitHeight="18.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -166,7 +166,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="approveButton1" mnemonicParsing="false" prefHeight="26.0" prefWidth="124.0" style="-fx-background-color: transparent;" text="My Surveys" textFill="#35b8d4">
+                  <Button mnemonicParsing="false" onAction="#switchToMySurvey" prefHeight="26.0" prefWidth="124.0" style="-fx-background-color: transparent;" text="My Surveys" textFill="#35b8d4">
                      <graphic>
                         <ImageView fitHeight="21.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -182,7 +182,7 @@
             </VBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="preferencesButton" graphicTextGap="6.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="120.0" style="-fx-background-color: #63c5da; -fx-background-radius: 15;" text="Preferences" textFill="WHITE">
+                  <Button fx:id="preferencesButton" graphicTextGap="6.0" mnemonicParsing="false" onAction="#changeSetting" prefHeight="50.0" prefWidth="120.0" style="-fx-background-color: #63c5da; -fx-background-radius: 15;" text="Preferences" textFill="WHITE">
                      <graphic>
                         <ImageView fitHeight="18.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
                            <image>

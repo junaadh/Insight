@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.ResourceBundle;
 
 import db.BinHandler;
@@ -13,11 +14,16 @@ import forms.Mcq;
 import forms.Openended;
 import forms.Polar;
 import forms.Opinion;
+import forms.Person;
 import forms.Question;
 import forms.Rank;
+import forms.Survey;
+import forms.SurveyCreator;
 import javafx.scene.control.TextField;
 
 import helper.Javax;
+import helper.Session;
+import helper.Misc.prefix;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -46,9 +52,13 @@ public class SurveyCreationController implements Initializable {
   Javax creator = new Javax();
   BinHandler handler = new BinHandler();
   ArrayList<Question> surveyQuestions = new ArrayList<>();
+  String scId;
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
+    Person p = Session.getInstance().getPerson();
+    SurveyCreator sc = handler.searchSurveyCreator(prefix.NID, p.getNid());
+    scId = sc.getScId();
     dynamicHandler();
   }
 
@@ -66,16 +76,19 @@ public class SurveyCreationController implements Initializable {
       if (selector.getValue() != null) {
         String selected = selector.getValue().toString();
         createQuestion(selected);
-        // selector.setPromptText("Choose next question type");
       }
     });
     Button createSurvey = creator.createButton("Create Survey");
     vbox.getChildren().add(createSurvey);
     createSurvey.setMaxWidth(Double.MAX_VALUE);
     createSurvey.setOnAction(event -> {
+      System.out.println("clicker");
       if (!surveyQuestions.isEmpty()) {
+        Survey s = new Survey(surveyId.getText(), scId);
+        handler.addSurvey(s);
         for (Question q : surveyQuestions) {
           handler.addQuestions(q);
+          System.out.println(q.buildInfo());
         }
         System.out.println("Added Surveys");
         try {
@@ -94,7 +107,7 @@ public class SurveyCreationController implements Initializable {
 
   private void createQuestion(String type) {
     if (type.equals("Openended")) {
-      String qId = handler.genQuestionId();
+      String qId = genQuestionId(surveyQuestions);
       TextField qtext = creator.createTextField("Enter your question");
       Button addButton = creator.createButton("Add Question");
       Button deleteQuestion = creator.createButton("Delete Question");
@@ -105,8 +118,8 @@ public class SurveyCreationController implements Initializable {
       VBox openended = creator.createVBox(nodes);
       openended.setSpacing(16);
       questionBox.getChildren().add(openended);
-      Openended q = new Openended(surveyId.getText(), true, qId, qtext.getText(), null);
       addButton.setOnAction(event -> {
+        Openended q = new Openended(surveyId.getText(), false, qId, qtext.getText(), type);
         if (q != null) {
           surveyQuestions.add(q);
         }
@@ -114,12 +127,13 @@ public class SurveyCreationController implements Initializable {
       deleteQuestion.setOnAction(event -> {
         openended.getChildren().clear();
         questionBox.getChildren().remove(openended);
+        Openended q = new Openended(surveyId.getText(), true, qId, qtext.getText(), type);
         if (surveyQuestions.contains(q)) {
           surveyQuestions.remove(q);
         }
       });
     } else if (type.equals("Polar")) {
-      String qId = handler.genQuestionId();
+      String qId = genQuestionId(surveyQuestions);
       TextField qtext = creator.createTextField("Enter your question");
       Button addButton = creator.createButton("Add Question");
       Button deleteQuestion = creator.createButton("Delete Question");
@@ -130,8 +144,8 @@ public class SurveyCreationController implements Initializable {
       VBox polar = creator.createVBox(nodes);
       polar.setSpacing(16);
       questionBox.getChildren().add(polar);
-      Polar q = new Polar(surveyId.getText(), false, qId, qtext.getText());
       addButton.setOnAction(event -> {
+        Polar q = new Polar(surveyId.getText(), false, qId, qtext.getText(), type);
         if (q != null) {
           surveyQuestions.add(q);
         }
@@ -139,12 +153,13 @@ public class SurveyCreationController implements Initializable {
       deleteQuestion.setOnAction(event -> {
         polar.getChildren().clear();
         questionBox.getChildren().remove(polar);
+        Polar q = new Polar(surveyId.getText(), false, qId, qtext.getText(), type);
         if (surveyQuestions.contains(q)) {
           surveyQuestions.remove(q);
         }
       });
     } else if (type.equals("Demographic")) {
-      String qId = handler.genQuestionId();
+      String qId = genQuestionId(surveyQuestions);
       TextField qtext = creator.createTextField("Enter your question");
       Button addButton = creator.createButton("Add Question");
       Button deleteQuestion = creator.createButton("Delete Question");
@@ -155,8 +170,8 @@ public class SurveyCreationController implements Initializable {
       VBox demographic = creator.createVBox(nodes);
       demographic.setSpacing(16);
       questionBox.getChildren().add(demographic);
-      Demographic q = new Demographic(surveyId.getText(), false, qId, qtext.getText(), null);
       addButton.setOnAction(event -> {
+        Demographic q = new Demographic(surveyId.getText(), false, qId, qtext.getText(), type);
         if (q != null) {
           surveyQuestions.add(q);
         }
@@ -164,12 +179,13 @@ public class SurveyCreationController implements Initializable {
       deleteQuestion.setOnAction(event -> {
         demographic.getChildren().clear();
         questionBox.getChildren().remove(demographic);
+        Demographic q = new Demographic(surveyId.getText(), false, qId, qtext.getText(), type);
         if (surveyQuestions.contains(q)) {
           surveyQuestions.remove(q);
         }
       });
     } else if (type.equals("Opinion")) {
-      String qId = handler.genQuestionId();
+      String qId = genQuestionId(surveyQuestions);
       TextField qtext = creator.createTextField("Enter your question");
       Button addButton = creator.createButton("Add Question");
       Button deleteQuestion = creator.createButton("Delete Question");
@@ -180,8 +196,8 @@ public class SurveyCreationController implements Initializable {
       VBox opinion = creator.createVBox(nodes);
       opinion.setSpacing(16);
       questionBox.getChildren().add(opinion);
-      Opinion q = new Opinion(surveyId.getText(), false, qId, qtext.getText(), null);
       addButton.setOnAction(event -> {
+        Opinion q = new Opinion(surveyId.getText(), false, qId, qtext.getText(), type);
         if (q != null) {
           surveyQuestions.add(q);
         }
@@ -190,13 +206,13 @@ public class SurveyCreationController implements Initializable {
         opinion
             .getChildren().clear();
         questionBox.getChildren().remove(opinion);
+        Opinion q = new Opinion(surveyId.getText(), false, qId, qtext.getText(), type);
         if (surveyQuestions.contains(q)) {
           surveyQuestions.remove(q);
         }
       });
     } else if (type.equals("Rank")) {
-      ArrayList<String> optionList = new ArrayList<>();
-      String qId = handler.genQuestionId();
+      String qId = genQuestionId(surveyQuestions);
       TextField qtext = creator.createTextField("Enter your question");
 
       OptionComponent component = new OptionComponent();
@@ -210,23 +226,23 @@ public class SurveyCreationController implements Initializable {
       VBox rank = creator.createVBox(nodes);
       rank.setSpacing(16);
       questionBox.getChildren().add(rank);
-      optionList = component.getOptions();
-      Rank q = new Rank(surveyId.getText(), false, qId, qtext.getText(), optionList, null);
 
+      ArrayList<String> optionList = component.getOptions();
       addButton.setOnAction(event -> {
+        Rank q = new Rank(surveyId.getText(), false, qId, qtext.getText(), type, optionList);
         surveyQuestions.add(q);
       });
       deleteQuestion.setOnAction(event -> {
         rank
             .getChildren().clear();
         questionBox.getChildren().remove(rank);
+        Rank q = new Rank(surveyId.getText(), false, qId, qtext.getText(), type, optionList);
         if (surveyQuestions.contains(q)) {
           surveyQuestions.remove(q);
         }
       });
     } else if (type.equals("Likert")) {
-      ArrayList<String> optionList = new ArrayList<>();
-      String qId = handler.genQuestionId();
+      String qId = genQuestionId(surveyQuestions);
       TextField qtext = creator.createTextField("Enter your question");
 
       OptionComponent component = new OptionComponent();
@@ -240,50 +256,24 @@ public class SurveyCreationController implements Initializable {
       VBox likert = creator.createVBox(nodes);
       likert.setSpacing(16);
       questionBox.getChildren().add(likert);
-      optionList = component.getOptions();
-      Likert q = new Likert(surveyId.getText(), false, qId, qtext.getText(), optionList);
+      ArrayList<String> optionList = component.getOptions();
 
       addButton.setOnAction(event -> {
+        Likert q = new Likert(surveyId.getText(), false, qId, qtext.getText(), type, optionList);
         surveyQuestions.add(q);
       });
       deleteQuestion.setOnAction(event -> {
         likert
             .getChildren().clear();
         questionBox.getChildren().remove(likert);
+        Likert q = new Likert(surveyId.getText(), false, qId, qtext.getText(), type, optionList);
         if (surveyQuestions.contains(q)) {
           surveyQuestions.remove(q);
         }
       });
 
     } else if (type.equals("Rating")) {
-      String qId = handler.genQuestionId();
-      TextField qtext = creator.createTextField("Enter your question");
-      Button addButton = creator.createButton("Add Question");
-      Button deleteQuestion = creator.createButton("Delete Question");
-      HBox buttons = new HBox(addButton, deleteQuestion);
-      buttons.setSpacing(16);
-      buttons.setPadding(new Insets(0, 0, 16, 0));
-      Node[] nodes = { qtext, buttons };
-      VBox likert = creator.createVBox(nodes);
-      likert.setSpacing(16);
-      questionBox.getChildren().add(likert);
-      Likert q = new Likert(surveyId.getText(), false, qId, qtext.getText(), null);
-      addButton.setOnAction(event -> {
-        if (q != null) {
-          surveyQuestions.add(q);
-        }
-      });
-      deleteQuestion.setOnAction(event -> {
-        likert
-            .getChildren().clear();
-        questionBox.getChildren().remove(likert);
-        if (surveyQuestions.contains(q)) {
-          surveyQuestions.remove(q);
-        }
-      });
-    } else if (type.equals("MCQ")) {
-      ArrayList<String> optionList = new ArrayList<>();
-      String qId = handler.genQuestionId();
+      String qId = genQuestionId(surveyQuestions);
       TextField qtext = creator.createTextField("Enter your question");
 
       OptionComponent component = new OptionComponent();
@@ -297,10 +287,10 @@ public class SurveyCreationController implements Initializable {
       VBox mcq = creator.createVBox(nodes);
       mcq.setSpacing(16);
       questionBox.getChildren().add(mcq);
-      optionList = component.getOptions();
-      Mcq q = new Mcq(surveyId.getText(), false, qId, qtext.getText(), optionList, null);
+      ArrayList<String> optionList = component.getOptions();
 
       addButton.setOnAction(event -> {
+        Likert q = new Likert(surveyId.getText(), false, qId, qtext.getText(), type, optionList);
         surveyQuestions.add(q);
       });
       deleteQuestion.setOnAction(event -> {
@@ -308,6 +298,38 @@ public class SurveyCreationController implements Initializable {
 
             .getChildren().clear();
         questionBox.getChildren().remove(mcq);
+        Likert q = new Likert(surveyId.getText(), false, qId, qtext.getText(), type, optionList);
+        if (surveyQuestions.contains(q)) {
+          surveyQuestions.remove(q);
+        }
+      });
+    } else if (type.equals("MCQ")) {
+      String qId = genQuestionId(surveyQuestions);
+      TextField qtext = creator.createTextField("Enter your question");
+
+      OptionComponent component = new OptionComponent();
+
+      Button addButton = creator.createButton("Add Question");
+      Button deleteQuestion = creator.createButton("Delete Question");
+      HBox buttons = new HBox(addButton, deleteQuestion);
+      buttons.setSpacing(16);
+      buttons.setPadding(new Insets(0, 0, 16, 0));
+      Node[] nodes = { qtext, component.getMainBox(), buttons };
+      VBox mcq = creator.createVBox(nodes);
+      mcq.setSpacing(16);
+      questionBox.getChildren().add(mcq);
+      ArrayList<String> optionList = component.getOptions();
+
+      addButton.setOnAction(event -> {
+        Mcq q = new Mcq(surveyId.getText(), false, qId, qtext.getText(), type, optionList);
+        surveyQuestions.add(q);
+      });
+      deleteQuestion.setOnAction(event -> {
+        mcq
+
+            .getChildren().clear();
+        questionBox.getChildren().remove(mcq);
+        Mcq q = new Mcq(surveyId.getText(), false, qId, qtext.getText(), type, optionList);
         if (surveyQuestions.contains(q)) {
           surveyQuestions.remove(q);
         }
@@ -378,6 +400,22 @@ public class SurveyCreationController implements Initializable {
     public ArrayList<String> getOptions() {
       return options;
     }
+  }
+
+  private String genQuestionId(ArrayList<Question> list) {
+    String qId = handler.genQuestionId();
+
+    if (list.isEmpty()) {
+      return qId;
+    }
+
+    ArrayList<String> id = new ArrayList<>();
+    for (Question q : list) {
+      id.add(q.getQId().substring(2));
+    }
+    Collections.sort(id);
+    String last = id.get(id.size() - 1);
+    return "QX" + String.format("%05d", (Integer.parseInt(last) + 1));
   }
 
 }

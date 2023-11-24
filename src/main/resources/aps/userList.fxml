@@ -5,7 +5,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="720.0" prefWidth="1220.0" stylesheets="styles.css" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aps.ListController">
+<BorderPane prefHeight="720.0" prefWidth="1220.0" stylesheets="styles.css" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aps.UserListController">
    <top>
       <HBox alignment="CENTER_LEFT" prefHeight="51.0" prefWidth="1148.0" spacing="250.0" style="-fx-background-radius: 15; -fx-background-color: #e1e0e0;" BorderPane.alignment="CENTER">
          <BorderPane.margin>
@@ -33,7 +33,7 @@
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
          </BorderPane.margin>
          <children>
-            <TableView fx:id="survey" prefHeight="603.0" prefWidth="1180.0">
+            <TableView fx:id="table" prefHeight="603.0" prefWidth="1180.0">
                <VBox.margin>
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                </VBox.margin>

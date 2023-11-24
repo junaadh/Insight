@@ -1,8 +1,10 @@
 helper/Session.class
 forms/Review.class
 aps/LoginController.class
+aps/SurveyController.class
 forms/Question.class
 forms/Rank.class
+aps/UserListController.class
 forms/Rating.class
 forms/Person.class
 forms/Demographic.class
@@ -19,6 +21,7 @@ helper/Manipulator.class
 forms/Admin.class
 db/FilePicker$dbFiles.class
 db/FilePicker.class
+aps/SettingsController.class
 aps/ScDashController.class
 module-info.class
 db/BinHandler$1.class
@@ -29,6 +32,9 @@ db/BinHandler.class
 forms/Response.class
 forms/Survey.class
 helper/Hasher.class
+aps/ScListController.class
+aps/MySurveyController.class
+aps/ListController.class
 aps/LandingController.class
 aps/App.class
 helper/Misc.class

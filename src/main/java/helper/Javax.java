@@ -2,9 +2,6 @@ package helper;
 
 import java.util.List;
 
-import db.BinHandler;
-import forms.Openended;
-import forms.SurveyCreator;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;

@@ -49,6 +49,11 @@ public class AdminDashController implements Initializable {
   }
 
   @FXML
+  private void changeSetting() throws IOException {
+    App.setRoot("settings");
+  }
+
+  @FXML
   private void logoutAction() throws IOException {
     Session.getInstance().initSession();
     App.setRoot("landing");
@@ -90,6 +95,26 @@ public class AdminDashController implements Initializable {
     if (selectedItem != null) {
       System.out.println("Selected: " + selectedItem.getUsername());
     }
+  }
+
+  @FXML
+  private void createPerson() throws IOException {
+    App.setRoot("signup");
+  }
+
+  @FXML
+  private void switchToUser() throws IOException {
+    App.setRoot("userList");
+  }
+
+  @FXML
+  private void switchToSurveys() throws IOException {
+    App.setRoot("list");
+  }
+
+  @FXML
+  private void switchToSc() throws IOException {
+    App.setRoot("ScList");
   }
 
 }

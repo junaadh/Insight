@@ -58,6 +58,10 @@ public class Person implements Manipulator {
     this.isSurveyCreator = args[11].equals("true") ? true : false;
   }
 
+  public Person() {
+    // dummy
+  }
+
   public String getNid() {
     return this.nid;
   }

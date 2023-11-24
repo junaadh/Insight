@@ -15,8 +15,11 @@ import helper.Session;
 import helper.Misc.prefix;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
@@ -42,7 +45,10 @@ public class ScDashController implements Initializable {
   @FXML
   private VBox defaultView;
 
+  private VBox mainContainer = new VBox(16);
   private Map<String, Survey> surveymap;
+  BinHandler handler = new BinHandler();
+  String scId;
 
   @Override
   public void initialize(URL location, ResourceBundle resource) {
@@ -60,24 +66,31 @@ public class ScDashController implements Initializable {
     App.setRoot("surveyCreation");
   }
 
+  @FXML
+  private void changeSetting() throws IOException {
+    App.setRoot("settings");
+  }
+
   private void loadResources() {
-    BinHandler handler = new BinHandler();
 
     Person p = Session.getInstance().getPerson();
     SurveyCreator a = p instanceof SurveyCreator ? (SurveyCreator) p : null;
     if (a == null) {
       a = handler.searchSurveyCreator(prefix.NID, p.getNid());
     }
+    scId = a.getScId();
     roleField.setText(Session.getInstance().role());
     nameField.setText(p.getFullname());
     idField.setText(a.getScId());
 
     searchList = new TableView<Survey>();
+    VBox.setMargin(searchList, new Insets(0, 16, 0, 16));
     surveymap = BinHandler.loadSurvey();
     ArrayList<Survey> map = handler.valuesToList(surveymap);
+    Survey s = new Survey();
 
-    // Javax.initializeTableColumn(map.get(0).getHeaders(), searchList);
-    // Javax.initializeTableRow(map, searchList);
+    Javax.initializeTableColumn(s.getHeaders(), searchList);
+    Javax.initializeTableRow(map, searchList);
 
     searchList.managedProperty().bind(searchList.visibleProperty());
     searchList.visibleProperty().bind(searchField.focusedProperty().or(searchList.focusedProperty()));
@@ -94,8 +107,23 @@ public class ScDashController implements Initializable {
   private void handleClick() {
     Survey selectedItem = searchList.getSelectionModel().getSelectedItem();
     if (selectedItem != null) {
-      System.out.println("Selected: " + selectedItem.getsurveyId());
+      System.out.println("Selected: " + selectedItem.getSurveyId());
     }
+  }
+
+  @FXML
+  private void switchToSurvey() throws IOException {
+    App.setRoot("list");
+  }
+
+  @FXML
+  private void switchToMySurvey() throws IOException {
+    App.setRoot("mySurvey");
+  }
+
+  @FXML
+  private void switchToUser() throws IOException {
+    App.setRoot("userList");
   }
 
 }

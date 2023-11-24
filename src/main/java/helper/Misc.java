@@ -143,7 +143,8 @@ public class Misc {
     BOOLCHOICE(":28:"),
     RATING(":29:"),
     RESPONSES(":30:"),
-    RESPONSEID(":31:");
+    RESPONSEID(":31:"),
+    QTYPE(":32:");
 
     private final String field;
 

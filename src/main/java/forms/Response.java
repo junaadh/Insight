@@ -1,33 +1,36 @@
 package forms;
 
-import java.util.ArrayList;
-
 import helper.Manipulator;
-import helper.Misc;
 import helper.Misc.prefix;
 
 public class Response implements Manipulator {
   private String responseId;
+  private String qId;
   private String nid;
   private String surveyId;
-  private ArrayList<String> reponses;
+  private String reponses;
 
-  public Response(String responseId, String nid, String surveyId, ArrayList<String> response) {
-    this.responseId = responseId;
+  public Response(String reponseId, String QId, String nid, String surveyId, String response) {
+    this.responseId = reponseId;
+    this.qId = QId;
     this.nid = nid;
     this.surveyId = surveyId;
     this.reponses = response;
   }
 
   public Response(String[] args) {
-    this.responseId = args[0];
-    this.nid = args[1];
-    this.surveyId = args[2];
-    this.reponses = Misc.stringArrayList(args[3]);
+    this.qId = args[1];
+    this.nid = args[2];
+    this.surveyId = args[3];
+    this.reponses = args[4];
   }
 
   public String getResponseId() {
     return this.responseId;
+  }
+
+  public String getQId() {
+    return this.qId;
   }
 
   public String getNid() {
@@ -38,16 +41,17 @@ public class Response implements Manipulator {
     return this.surveyId;
   }
 
-  public ArrayList<String> getReponses() {
+  public String getReponses() {
     return this.reponses;
   }
 
   public String buildInfo() {
     StringBuilder cur = new StringBuilder();
     cur.append(prefix.RESPONSEID + this.responseId);
-    cur.append(prefix.NID + this.nid);
-    cur.append(prefix.SURVEYID + this.surveyId);
-    cur.append(prefix.RESPONSES + Misc.arrayListString(this.reponses));
+    cur.append(prefix.QID.getPrefix() + this.qId);
+    cur.append(prefix.NID.getPrefix() + this.nid);
+    cur.append(prefix.SURVEYID.getPrefix() + this.surveyId);
+    cur.append(prefix.RESPONSES.getPrefix() + this.reponses);
     return cur.toString();
   }
 }
