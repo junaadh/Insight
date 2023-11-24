@@ -10,13 +10,23 @@ import java.util.Map;
 import db.FilePicker.dbFiles;
 import forms.Admin;
 import forms.Person;
+import forms.Question;
+import forms.Response;
+import forms.Review;
+import forms.Survey;
 import forms.SurveyCreator;
 import forms.User;
+import helper.Manipulator;
 import helper.Misc;
 import helper.RecordInfo;
 import helper.Misc.prefix;
 
-public class BinHandler {
+public class BinHandler implements Manipulator {
+
+  @Override
+  public String buildInfo() {
+    return null;
+  }
 
   // add wrapper methods
   public String addUser(User user) {
@@ -62,13 +72,52 @@ public class BinHandler {
     return null;
   }
 
-  public String addSurvey() {
-    // TODO:: create survey class and visit here
+  public String addSurvey(Survey s) {
+    String data = s.buildInfo();
+    try {
+      if (read(dbFiles.SURVEYS, s.getSurveyId()) == null) {
+        return create(dbFiles.SURVEYS, data) ? "Survey added successfully" : null;
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to create survey");
+    }
     return null;
   }
 
-  public String addReviews() {
-    // TODO:: create reviews class and visit here
+  public String addReviews(Review r) {
+    String data = r.buildInfo();
+    try {
+      if (read(dbFiles.REVIEWS, r.getRevId()) == null) {
+        return create(dbFiles.REVIEWS, data) ? "Review added successfully" : null;
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to create review");
+    }
+    return null;
+  }
+
+  public <T extends Question> String addQuestions(T q) {
+    String data = q.buildInfo();
+    // System.out.println(data);
+    try {
+      if (read(dbFiles.QUESTIONS, q.getQId()) == null) {
+        return create(dbFiles.QUESTIONS, data) ? "Question added succesfully" : null;
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to create questions");
+    }
+    return null;
+  }
+
+  public String addResponse(Response r) {
+    String data = r.buildInfo();
+    try {
+      if (read(dbFiles.RESPONSES, r.getResponseId()) == null) {
+        return create(dbFiles.RESPONSES, data) ? "Response saved succussfully" : null;
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to create response");
+    }
     return null;
   }
 
@@ -106,13 +155,43 @@ public class BinHandler {
     return false;
   }
 
-  public boolean deleteSurvey() {
-    // TODO:: create surveys class
+  public boolean deleteSurvey(Survey s) {
+    String data = prefix.SURVEYID.getPrefix() + s.getSurveyId();
+    try {
+      return delete(dbFiles.SURVEYS, data);
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to remove survey: " + e.getMessage());
+    }
     return false;
   }
 
-  public boolean deleteReviews() {
-    // TODO:: create reviews class
+  public boolean deleteReviews(Review r) {
+    String data = prefix.REVID.getPrefix() + r.getRevId();
+    try {
+      return delete(dbFiles.REVIEWS, data);
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to remove review: " + e.getMessage());
+    }
+    return false;
+  }
+
+  public boolean deleteQuestions(Question q) {
+    String data = prefix.QID.getPrefix() + q.getQId();
+    try {
+      return delete(dbFiles.QUESTIONS, data);
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to remove question: " + e.getMessage());
+    }
+    return false;
+  }
+
+  public boolean deleteResponse(Response r) {
+    String data = prefix.RESPONSEID.getPrefix() + r.getResponseId();
+    try {
+      return delete(dbFiles.RESPONSES, data);
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to remove response: " + e.getMessage());
+    }
     return false;
   }
 
@@ -169,20 +248,58 @@ public class BinHandler {
     return null;
   }
 
-  @SuppressWarnings("unused")
-  public String searchSurveys(prefix field, String query) {
+  public Survey searchSurveys(prefix field, String query) {
     String queryStr = field.getPrefix() + query;
-    // TODO:: create survey class and appropriate fields in prefix enum
-    // FIXME:: need to return a survey obj
+    try {
+      String data = read(dbFiles.SURVEYS, queryStr);
+      String[] results = Misc.destructure(data);
+      return (Survey) Misc.construct(results, Survey.class);
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed fetching data from db: " + e.getMessage());
+    } catch (Exception er) {
+      System.out.println("ERROR: Failed fetching datay from db: " + er.getLocalizedMessage());
+    }
     return null;
   }
 
-  @SuppressWarnings("unused")
-  public String searchReviews(prefix field, String query) {
+  public Review searchReviews(prefix field, String query) {
     String queryStr = field.getPrefix() + query;
-    // TODO:: create reviews class and appropraite fields in prefix enum
-    // FIXME:: needs to return a review obj
+    try {
+      String[] results = Misc.destructure(read(dbFiles.REVIEWS, queryStr));
+      return Misc.construct(results, Review.class);
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed fetching data from db: " + e.getMessage());
+    } catch (Exception er) {
+      System.out.println("ERROR: Failed fetching datay from db: " + er.getMessage());
+    }
     return null;
+  }
+
+  public <T extends Question> T searchQuestions(prefix field, String query, Class<T> className) {
+    String queryStr = field.getPrefix() + query;
+    try {
+      String[] results = Misc.destructure(read(dbFiles.QUESTIONS, queryStr));
+      return Misc.construct(results, className);
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed fetching data from db: " + e.getMessage());
+    } catch (Exception er) {
+      System.out.println("ERROR: Failed fetching data from db: " + er.getMessage());
+    }
+    return null;
+  }
+
+  public Response searchResponse(prefix field, String query) {
+    String queryStr = field.getPrefix() + query;
+    try {
+      String[] results = Misc.destructure(read(dbFiles.RESPONSES, queryStr));
+      return Misc.construct(results, Response.class);
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed fetching data from db: " + e.getMessage());
+    } catch (Exception er) {
+      System.out.println("ERROR: Failed fetching datay from db: " + er.getMessage());
+    }
+    return null;
+
   }
 
   // update wrapper methods
@@ -191,8 +308,9 @@ public class BinHandler {
     String pref = field.getPrefix();
     try {
       Boolean bool = update(dbFiles.USERS, pref + oldStr, pref + newString, user.getNid());
+      Boolean bool2 = update(dbFiles.PERSON, pref + oldStr, pref + newString, user.getNid());
       // System.out.println("1");
-      if (bool) {
+      if (bool && bool2) {
         // System.out.println("2");
         usr = searchUsers(prefix.NID, user.getNid());
       }
@@ -207,7 +325,8 @@ public class BinHandler {
     String pref = field.getPrefix();
     try {
       Boolean bool = update(dbFiles.ADMINS, pref + oldStr, pref + newString, admin.getNid());
-      if (bool) {
+      Boolean bool2 = update(dbFiles.PERSON, pref + oldStr, pref + newString, admin.getNid());
+      if (bool && bool2) {
         adn = searchAdmins(prefix.NID, admin.getNid());
       }
     } catch (IOException e) {
@@ -221,7 +340,8 @@ public class BinHandler {
     String pref = field.getPrefix();
     try {
       Boolean bool = update(dbFiles.SURVEY_CREATORS, pref + oldStr, pref + newString, sc.getNid());
-      if (bool) {
+      Boolean bool2 = update(dbFiles.PERSON, pref + oldStr, pref + newString, sc.getNid());
+      if (bool && bool2) {
         scr = searchSurveyCreator(prefix.NID, sc.getNid());
       }
     } catch (IOException e) {
@@ -230,12 +350,59 @@ public class BinHandler {
     return scr;
   }
 
-  public void updateSurvey() {
-    // TODO:: implement update survey to return obj survey
+  public Survey updateSurvey(Survey s, String oldStr, String newStr, prefix field) {
+    Survey sc = null;
+    String pref = field.getPrefix();
+    try {
+      Boolean bool = update(dbFiles.SURVEYS, pref + oldStr, pref + newStr, s.getSurveyId());
+      if (bool) {
+        sc = searchSurveys(prefix.SURVEYID, s.getSurveyId());
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to update data: " + e.getMessage());
+    }
+    return sc;
   }
 
-  public void updateReview() {
-    // TODO:: implement update survey to return obj survey
+  public Review updateReview(Review r, String oldStr, String newStr, prefix field) {
+    Review rw = null;
+    String pref = field.getPrefix();
+    try {
+      Boolean bool = update(dbFiles.REVIEWS, pref + oldStr, pref + newStr, r.getRevId());
+      if (bool) {
+        rw = searchReviews(prefix.REVID, r.getRevId());
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to update data: " + e.getMessage());
+    }
+    return rw;
+  }
+
+  public Question updateQuestion(Question q, String oldStr, String newStr, prefix field) {
+    String pref = field.getPrefix();
+    try {
+      Boolean bool = update(dbFiles.QUESTIONS, pref + oldStr, pref + newStr, q.getQId());
+      if (bool) {
+        return searchQuestions(prefix.QID, q.getQId(), Question.class);
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to update data: " + e.getMessage());
+    }
+    return null;
+  }
+
+  public Response updateResponse(Response r, String oldStr, String newStr, prefix field) {
+    String pref = field.getPrefix();
+    try {
+      Boolean bool = update(dbFiles.RESPONSES, pref + oldStr, pref + newStr, r.getResponseId());
+      if (bool) {
+        return searchResponse(prefix.RESPONSEID, r.getResponseId());
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to update data: " + e.getMessage());
+    }
+    return null;
+
   }
 
   // // Misc generic searches
@@ -267,11 +434,8 @@ public class BinHandler {
   public String genUserId() {
     String id;
     try {
-      System.out.println("HEREI AM MOFO");
       ArrayList<String> ids = exportinfo(dbFiles.USERS);
-      System.out.println(ids.size() + "hehehe");
       Collections.sort(ids);
-      System.out.println(ids.size() + "hgdhdgdgdggd");
       String last = ids.isEmpty() ? "0" : ids.get(ids.size() - 1);
       if (Misc.isIntegar(last)) {
         id = String.format("%05d", Integer.parseInt(last) + 1);
@@ -321,15 +485,102 @@ public class BinHandler {
     return null;
   }
 
+  public String genSurveyId() {
+    String id;
+    try {
+      ArrayList<String> ids = exportinfo(dbFiles.SURVEYS);
+      Collections.sort(ids);
+      String last = ids.isEmpty() ? "0" : ids.get(ids.size() - 1);
+      if (Misc.isIntegar(last)) {
+        id = String.format("%05d", Integer.parseInt(last) + 1);
+        return "SX" + id;
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to generate id: " + e.getMessage());
+    } catch (Exception er) {
+      System.out.println("ERROR: Failed to generate id" + er.getMessage());
+    }
+    return null;
+  }
+
+  public String genReviewId() {
+    String id;
+    try {
+      ArrayList<String> ids = exportinfo(dbFiles.REVIEWS);
+      Collections.sort(ids);
+      String last = ids.isEmpty() ? "0" : ids.get(ids.size() - 1);
+      if (Misc.isIntegar(last)) {
+        id = String.format("%05d", Integer.parseInt(last) + 1);
+        return "RX" + id;
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to generate id: " + e.getMessage());
+    } catch (Exception er) {
+      System.out.println("ERROR: Failed to generate id" + er.getMessage());
+    }
+    return null;
+  }
+
+  public String genQuestionId() {
+    String id;
+    try {
+      ArrayList<String> ids = exportinfo(dbFiles.QUESTIONS);
+      Collections.sort(ids);
+      String last = ids.isEmpty() ? "0" : ids.get(ids.size() - 1);
+      if (Misc.isIntegar(last)) {
+        id = String.format("%05d", Integer.parseInt(last) + 1);
+        return "QX" + id;
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to generate id: " + e.getMessage());
+    } catch (Exception er) {
+      System.out.println("ERROR: Failed to generate id" + er.getMessage());
+    }
+    return null;
+  }
+
+  public String genResponseId() {
+    String id;
+    try {
+      ArrayList<String> ids = exportinfo(dbFiles.RESPONSES);
+      Collections.sort(ids);
+      String last = ids.isEmpty() ? "0" : ids.get(ids.size() - 1);
+      if (Misc.isIntegar(last)) {
+        id = String.format("%05d", Integer.parseInt(last) + 1);
+        return "RS" + id;
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to generate id: " + e.getMessage());
+    } catch (Exception er) {
+      System.out.println("ERROR: Failed to generate id" + er.getMessage());
+    }
+    return null;
+  }
+
   // loading wrappers
+  public static Map<String, Person> loadPerson() {
+    Map<String, Person> userMap = new HashMap<String, Person>();
+    try {
+      ArrayList<Person> data = exporter(dbFiles.PERSON);
+      for (Person u : data) {
+        userMap.put(u.getNid() + "," + u.getFullname() + "," + u.getUsername(), u);
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to process data: " + e.getMessage());
+    } catch (Exception er) {
+      System.out.println("ERROR: Failed to process data: " + er.getMessage());
+    }
+    return userMap;
+  }
+
   public static Map<String, User> loadUser() {
     Map<String, User> userMap = new HashMap<String, User>();
     try {
       ArrayList<User> data = exporter(dbFiles.USERS);
 
       for (User u : data) {
-        userMap.put("NID: " + u.getNid() + " Username: " + u.getUsername() + " UserId: " + u.getUserId() + " Fullname: "
-            + u.getFullname(), u);
+        userMap.put("NID: " + u.getNid() + " Fullname: " + u.getFullname() + " Username: " + u.getUsername()
+            + " UserId: " + u.getUserId(), u);
       }
     } catch (IOException e) {
       System.out.println("ERROR: Failed to process data: " + e.getMessage());
@@ -345,9 +596,8 @@ public class BinHandler {
       ArrayList<Admin> data = exporter(dbFiles.ADMINS);
 
       for (Admin u : data) {
-        // TODO: Format
-        adminMap.put("NID: " + u.getNid() + " Username: " + u.getUsername() + " AdminId: " + u.getAdminId()
-            + " Fullname: " + u.getFullname(), u);
+        adminMap.put("NID: " + u.getNid() + " Fullname: " + u.getFullname() + " Username: " + u.getUsername()
+            + " AdminId: " + u.getAdminId(), u);
       }
     } catch (IOException e) {
       System.out.println("ERROR: Failed to process data: " + e.getMessage());
@@ -373,12 +623,68 @@ public class BinHandler {
     return scMap;
   }
 
-  public static void loadSurvey() {
-    // TODO:
+  public static Map<String, Survey> loadSurvey() {
+    Map<String, Survey> sMap = new HashMap<String, Survey>();
+    try {
+      ArrayList<Survey> data = exporter(dbFiles.SURVEYS);
+
+      for (Survey s : data) {
+        sMap.put(s.getSurveyId() + "," + s.getScId(), s);
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to process data: " + e.getMessage());
+    } catch (Exception er) {
+      System.out.println("ERROR: Failed to process data: " + er.getMessage());
+    }
+    return sMap;
   }
 
-  public static void loadReview() {
-    // TODO:
+  public static Map<String, Review> loadReview() {
+    Map<String, Review> rMap = new HashMap<String, Review>();
+    try {
+      ArrayList<Review> data = exporter(dbFiles.REVIEWS);
+
+      for (Review r : data) {
+        rMap.put(r.getRevId() + "," + r.getUserId(), r);
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to process data: " + e.getMessage());
+    } catch (Exception er) {
+      System.out.println("ERROR: Failed to process data: " + er.getMessage());
+    }
+    return rMap;
+  }
+
+  public static Map<String, Question> loadQuestion() {
+    Map<String, Question> qMap = new HashMap<String, Question>();
+    try {
+      ArrayList<Question> data = exporter(dbFiles.QUESTIONS);
+
+      for (Question q : data) {
+        qMap.put("QustionID: " + q.getQId() + "SurveyID: " + q.getSurveyId(), q);
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to process data: " + e.getMessage());
+    } catch (Exception er) {
+      System.out.println("ERROR: Failed to process data: " + er.getMessage());
+    }
+    return qMap;
+  }
+
+  public static Map<String, Response> loadResponse() {
+    Map<String, Response> qMap = new HashMap<String, Response>();
+    try {
+      ArrayList<Response> data = exporter(dbFiles.RESPONSES);
+
+      for (Response q : data) {
+        qMap.put(q.getResponseId() + "," + q.getNid() + "," + q.getSurveyId() + "," + q.getQId(), q);
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR: Failed to process data: " + e.getMessage());
+    } catch (Exception er) {
+      System.out.println("ERROR: Failed to process data: " + er.getMessage());
+    }
+    return qMap;
   }
 
   // DO NOT CHANGE
@@ -534,11 +840,23 @@ public class BinHandler {
           break;
 
         case SURVEYS:
-          // TODO: do survey list
+          Survey s = Misc.construct(Misc.destructure(cur.toString()), Survey.class);
+          id.add(s.getSurveyId().substring(2));
           break;
 
         case REVIEWS:
-          // TODO: do reviews list
+          Review r = Misc.construct(Misc.destructure(cur.toString()), Review.class);
+          id.add(r.getRevId().substring(2));
+          break;
+
+        case QUESTIONS:
+          Question q = Misc.construct(Misc.destructure(cur.toString()), Question.class);
+          id.add(q.getQId().substring(2));
+          break;
+
+        case RESPONSES:
+          Response rs = Misc.construct(Misc.destructure(cur.toString()), Response.class);
+          id.add(rs.getResponseId().substring(2));
           break;
 
         default:
@@ -551,6 +869,7 @@ public class BinHandler {
 
   }
 
+  @SuppressWarnings("unchecked")
   private static <T> ArrayList<T> exporter(dbFiles type) throws IOException, Exception {
     long currentPosition = 0;
     RandomAccessFile db = FilePicker.getdbFile(type);
@@ -575,6 +894,11 @@ public class BinHandler {
       }
 
       switch (type) {
+        case PERSON:
+          Person p = Misc.constructPerson(Misc.destructure(cur.toString()), Person.class);
+          obj.add((T) p);
+          break;
+
         case USERS:
           User u = (User) Misc.constructPerson(Misc.destructure(cur.toString()), User.class);
           obj.add((T) u);
@@ -592,11 +916,23 @@ public class BinHandler {
           break;
 
         case SURVEYS:
-          // TODO: do survey list
+          Survey s = Misc.construct(Misc.destructure(cur.toString()), Survey.class);
+          obj.add((T) s);
           break;
 
         case REVIEWS:
-          // TODO: do reviews list
+          Review r = Misc.construct(Misc.destructure(cur.toString()), Review.class);
+          obj.add((T) r);
+          break;
+
+        case QUESTIONS:
+          Question q = Misc.construct(Misc.destructure(cur.toString()), Question.class);
+          obj.add((T) q);
+          break;
+
+        case RESPONSES:
+          Response rs = Misc.construct(Misc.destructure(cur.toString()), Response.class);
+          obj.add((T) rs);
           break;
 
         default:

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane prefHeight="720.0" prefWidth="1220.0" stylesheets="styles.css" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aps.SettingsController">
+   <top>
+      <HBox alignment="CENTER_LEFT" prefHeight="51.0" prefWidth="1148.0" spacing="250.0" style="-fx-background-radius: 15; -fx-background-color: #e1e0e0;" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="logoutButton" ellipsisString="Logout" mnemonicParsing="false" onAction="#logoutAction" prefHeight="26.0" prefWidth="0.0" style="-fx-background-color: #63c5da; -fx-background-radius: 15;" text="Logout" textOverrun="CENTER_WORD_ELLIPSIS">
+               <graphic>
+                  <ImageView fitHeight="15.0" fitWidth="51.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@pics/logout.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Button>
+         </children>
+         <BorderPane.margin>
+            <Insets left="20.0" right="20.0" top="20.0" />
+         </BorderPane.margin>
+         <padding>
+            <Insets left="20.0" />
+         </padding>
+      </HBox>
+   </top>
+   <center>
+      <VBox fx:id="mainView" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" style="-fx-background-color: #e1e0e0; -fx-background-radius: 15;" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </BorderPane.margin>
+         <children>
+            <VBox fx:id="defaultView" alignment="CENTER">
+               <children>
+                  <HBox alignment="CENTER" prefHeight="610.0" prefWidth="1180.0">
+                     <children>
+                        <VBox alignment="CENTER" prefHeight="609.0" prefWidth="338.0" spacing="16.0">
+                           <children>
+                              <ComboBox fx:id="selector" prefHeight="49.0" prefWidth="338.0" promptText="Choose user to change password" style="-fx-background-color: transparent; -fx-border-radius: 15; -fx-border-color: #000;" />
+                              <PasswordField fx:id="oldPass" prefHeight="49.0" prefWidth="338.0" promptText="Old Password" style="-fx-background-color: transparent; -fx-border-color: #000; -fx-border-radius: 15;" />
+                              <PasswordField fx:id="newPass" prefHeight="49.0" prefWidth="338.0" promptText="New Password" style="-fx-background-color: transparent; -fx-border-color: #000; -fx-border-radius: 15;" />
+                              <PasswordField fx:id="confirmPass" prefHeight="49.0" prefWidth="338.0" promptText="Confirm New Password" style="-fx-background-color: transparent; -fx-border-color: #000; -fx-border-radius: 15;" />
+                              <Button ellipsisString="Logout" mnemonicParsing="false" onAction="#changeAction" prefHeight="50.0" prefWidth="337.0" style="-fx-background-color: #63c5da; -fx-background-radius: 15;" text="Change Password" textOverrun="CENTER_WORD_ELLIPSIS">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font>
+                              </Button>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children></VBox>
+   </center>
+</BorderPane>

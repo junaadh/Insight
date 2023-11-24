@@ -1,39 +1,40 @@
 package forms;
 
-import java.util.ArrayList;
+import helper.Manipulator;
+import helper.Misc.prefix;
 
-public class Survey {
+public class Survey implements Manipulator {
   private String surveyId;
   private String scId;
-  private boolean isPublic;
-  private ArrayList<String> participants;
 
   public Survey(
       String surveyId,
-      String scId,
-      boolean isPublic,
-      ArrayList<String> participants) {
-
+      String scId) {
+    this.surveyId = surveyId;
+    this.scId = scId;
   }
 
-  public String getsurveyId() {
+  public Survey(String[] args) {
+    this.surveyId = args[0];
+    this.scId = args[1];
+  }
+
+  public Survey() {
+    // dummy to get header;
+  }
+
+  public String getSurveyId() {
     return this.surveyId;
   }
 
-  public String getscId() {
+  public String getScId() {
     return this.scId;
   }
 
-  public boolean getisPublic() {
-    return this.isPublic;
+  public String buildInfo() {
+    StringBuilder sur = new StringBuilder();
+    sur.append(prefix.SURVEYID.getPrefix() + this.surveyId);
+    sur.append(prefix.SCID.getPrefix() + this.scId);
+    return sur.toString();
   }
-
-  public ArrayList<String> getparticipants() {
-    return participants;
-  }
-
-  public void setIsPublic() {
-    this.isPublic = true;
-  }
-
 }

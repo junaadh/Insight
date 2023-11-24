@@ -64,4 +64,18 @@ public class FilePickerTest {
 
     assertNotNull(db);
   }
+
+  @Test
+  public void testGetQuestionsDb() throws IOException {
+    RandomAccessFile db = FilePicker.getdbFile(dbFiles.QUESTIONS);
+
+    assertNotNull(db);
+  }
+
+  @Test
+  public void testGetResponsesDb() throws IOException {
+    RandomAccessFile db = FilePicker.getdbFile(dbFiles.RESPONSES);
+
+    assertNotNull(db);
+  }
 }

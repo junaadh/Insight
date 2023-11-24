@@ -9,6 +9,17 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.github.ben-manes.gradle-versions</groupId>
+                <artifactId>gradle-versions-maven-plugin</artifactId>
+                <version>1.3.1</version>
+                <scope>test</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>org.openjfx</groupId>
@@ -62,6 +73,11 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-versions-plugin</artifactId>
+                <version>1.3.1</version>
             </plugin>
         </plugins>
     </build>

@@ -12,7 +12,9 @@ public class FilePicker {
     ADMINS("admins.bin"),
     SURVEY_CREATORS("surveycreators.bin"),
     SURVEYS("surveys.bin"),
-    REVIEWS("reviews.bin");
+    REVIEWS("reviews.bin"),
+    QUESTIONS("questions.bin"),
+    RESPONSES("responses.bin");
 
     private final String fileName;
 

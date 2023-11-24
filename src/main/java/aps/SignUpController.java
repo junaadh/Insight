@@ -14,6 +14,7 @@ import helper.Hasher;
 import helper.Javax;
 import helper.Misc;
 import helper.Session;
+import helper.Misc.prefix;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -87,14 +88,20 @@ public class SignUpController implements Initializable {
 		if (!Session.getInstance().isAdmin()) {
 			App.setRoot("login");
 		} else {
-			App.setRoot("dash");
+			App.setRoot("adminDash");
 		}
 	}
 
 	@FXML
 	private void signInAction() throws IOException {
 		if (infoCheck()) {
-			App.setRoot("dash");
+			if (Session.getInstance().isAdmin()) {
+				App.setRoot("adminDash");
+			} else if (Session.getInstance().isSurveyCreator()) {
+				App.setRoot("scDash");
+			} else {
+				App.setRoot("dash");
+			}
 		}
 	}
 
@@ -157,7 +164,8 @@ public class SignUpController implements Initializable {
 						Integer.parseInt(phoneNo), nationality, userIdValue);
 				boolean bool = handler.addUser(user) != null;
 				if (bool && !Session.getInstance().isAdmin()) {
-					Session.getInstance().setPerson((Person) user);
+					Person p = handler.searchPerson(prefix.NID, user.getNid());
+					Session.getInstance().setPerson(p);
 				}
 				return bool;
 			}

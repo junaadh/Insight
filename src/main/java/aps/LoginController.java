@@ -50,17 +50,16 @@ public class LoginController implements Initializable {
       loginAlert.setHeaderText("User not found");
       loginAlert.setContentText("Please enter valid username and password or signup");
       loginAlert.showAndWait();
-    }
-
-    Session.getInstance().setPerson(person);
-    if (person.getIsAdmin()) {
-      App.setRoot("dash");
-    } else if (person.getIsSurveyCreator()) {
-      App.setRoot("sCreator");
     } else {
-      App.setRoot("dash");
+      Session.getInstance().setPerson(person);
+      if (person.getIsAdmin()) {
+        App.setRoot("adminDash");
+      } else if (person.getIsSurveyCreator()) {
+        App.setRoot("scDash");
+      } else {
+        App.setRoot("dash");
+      }
     }
-
   }
 
   @FXML

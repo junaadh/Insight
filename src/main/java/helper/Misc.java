@@ -2,11 +2,12 @@ package helper;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
-import db.BinHandler;
-import db.FilePicker.dbFiles;
 import forms.Person;
 
 public class Misc {
@@ -58,6 +59,37 @@ public class Misc {
     return bool ? "true" : "false";
   }
 
+  public static String arrayListString(ArrayList<String> list) {
+    String cur = String.join(",", list);
+    return cur;
+  }
+
+  public static ArrayList<String> stringArrayList(String concat) {
+    ArrayList<String> cur = new ArrayList<String>();
+    String[] results = concat.split(",");
+    cur.addAll(Arrays.asList(results));
+    return cur;
+  }
+
+  public static String hashMapString(HashMap<String, String> hashmap) {
+    String result = hashmap.entrySet()
+        .stream()
+        .map(entry -> entry.getKey() + ";" + entry.getValue())
+        .collect(Collectors.joining(","));
+    return result;
+  }
+
+  public static HashMap<String, String> stringHashMap(String data) {
+    HashMap<String, String> hashmap = new HashMap<>();
+    String[] entries = data.split(",");
+
+    for (String entry : entries) {
+      String[] key = entry.split(";");
+      hashmap.put(key[0].trim(), key[1].trim());
+    }
+    return hashmap;
+  }
+
   public static String[] destructure(String record) {
     String regex = ":\\d+:";
     Pattern template = Pattern.compile(regex);
@@ -69,6 +101,12 @@ public class Misc {
 
   public static Person constructPerson(String[] info, Class<? extends Person> classname) throws Exception {
     Constructor<? extends Person> constructor = classname.getConstructor(String[].class);
+
+    return constructor.newInstance((Object) info);
+  }
+
+  public static <T> T construct(String[] info, Class<T> className) throws Exception {
+    Constructor<T> constructor = className.getConstructor(String[].class);
 
     return constructor.newInstance((Object) info);
   }
@@ -88,7 +126,25 @@ public class Misc {
     ADMINID(":11:"),
     USERID(":12:"),
     SCID(":13:"),
-    SCDEPT(":14");
+    SCDEPT(":14:"),
+    SURVEYID(":15:"),
+    ISPUBLIC(":16:"),
+    PARTICIPANTS(":17:"),
+    REVID(":18:"),
+    REVCONTENT(":19:"),
+    DATACREATED(":20:"),
+    QID(":21:"),
+    ISCOMPULSORY(":22:"),
+    QTEXT(":23:"),
+    OPTIONS(":24:"),
+    RANKED(":25:"),
+    ANSWER(":26:"),
+    CHOICE(":27:"),
+    BOOLCHOICE(":28:"),
+    RATING(":29:"),
+    RESPONSES(":30:"),
+    RESPONSEID(":31:"),
+    QTYPE(":32:");
 
     private final String field;
 

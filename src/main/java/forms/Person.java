@@ -1,9 +1,10 @@
 package forms;
 
+import helper.Manipulator;
 import helper.Misc;
 import helper.Misc.prefix;
 
-public class Person {
+public class Person implements Manipulator {
 
   private String nid;
   private String username;
@@ -55,6 +56,10 @@ public class Person {
     this.nationality = args[9];
     this.isAdmin = args[10].equals("true") ? true : false;
     this.isSurveyCreator = args[11].equals("true") ? true : false;
+  }
+
+  public Person() {
+    // dummy
   }
 
   public String getNid() {

@@ -8,6 +8,7 @@ public final class Session {
   private boolean isAdmin = false;
   private boolean isSurveyCreator = false;
   private boolean isUser = false;
+  private String surveyId;
 
   private Session() {
   }
@@ -68,5 +69,13 @@ public final class Session {
   // for debugging
   public void setIsAdmin() {
     this.isAdmin = !this.isAdmin;
+  }
+
+  public void setSurveyId(String surveyId) {
+    this.surveyId = surveyId;
+  }
+
+  public String getSurveyid() {
+    return this.surveyId;
   }
 }

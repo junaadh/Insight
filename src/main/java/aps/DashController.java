@@ -2,23 +2,20 @@ package aps;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.ResourceBundle;
 
 import db.BinHandler;
-import forms.Admin;
 import forms.Person;
-import forms.SurveyCreator;
+import forms.Survey;
 import forms.User;
+import helper.Javax;
 import helper.Session;
 import helper.Misc.prefix;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -37,7 +34,7 @@ public class DashController implements Initializable {
   private TextField searchField;
 
   @FXML
-  private ListView<String> searchList;
+  private TableView<Survey> searchList;
 
   @FXML
   private VBox mainView;
@@ -45,7 +42,7 @@ public class DashController implements Initializable {
   @FXML
   private VBox defaultView;
 
-  private Map<String, User> usermap;
+  private Map<String, Survey> surveymap;
 
   @Override
   public void initialize(URL location, ResourceBundle resource) {
@@ -60,43 +57,51 @@ public class DashController implements Initializable {
 
   private void loadResources() {
     BinHandler handler = new BinHandler();
+
     Person p = Session.getInstance().getPerson();
-    String role = Session.getInstance().role();
-    searchList = new ListView<String>();
-    usermap = BinHandler.loadUser();
+    User a = p instanceof User ? (User) p : null;
+    if (a == null) {
+      a = handler.searchUsers(prefix.NID, p.getNid());
+    }
+    roleField.setText(Session.getInstance().role());
+    nameField.setText(p.getFullname());
+    idField.setText(a.getUserId());
 
-    ObservableList userKeys = FXCollections.observableArrayList(usermap.keySet());
-    FilteredList<String> filtered = new FilteredList<String>(userKeys);
+    searchList = new TableView<Survey>();
+    surveymap = BinHandler.loadSurvey();
+    ArrayList<Survey> map = handler.valuesToList(surveymap);
+    Survey s = new Survey();
 
-    searchList.setItems(filtered);
-    searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-      updateSearchResult(newValue, filtered);
-    });
+    Javax.initializeTableColumn(s.getHeaders(), searchList);
+    Javax.initializeTableRow(map, searchList);
 
     searchList.managedProperty().bind(searchList.visibleProperty());
-    searchList.visibleProperty().bind(searchField.focusedProperty());
-    // TODO: hide default view
+    searchList.visibleProperty().bind(searchField.focusedProperty().or(searchList.focusedProperty()));
+
+    defaultView.managedProperty().bind(defaultView.visibleProperty());
+    defaultView.visibleProperty().bind(searchList.visibleProperty().not());
     mainView.getChildren().add(searchList);
 
-    nameField.setText(p.getFullname());
-    roleField.setText(role);
+    searchField.setOnMouseClicked(event -> handleClick());
+    searchField.textProperty().addListener(
+        (observable, oldvalue, newvalue) -> Javax.initializeTableRow(handler.filter(surveymap, newvalue), searchList));
+  }
 
-    if (role.equals("User")) {
-      User u = handler.searchUsers(prefix.NID, p.getNid());
-      idField.setText(u.getUserId());
-    } else if (role.equals("Admin")) {
-      Admin a = handler.searchAdmins(prefix.NID, p.getNid());
-      idField.setText(a.getAdminId());
-    } else {
-      SurveyCreator sc = handler.searchSurveyCreator(prefix.NID, p.getNid());
-      idField.setText(sc.getNid());
+  private void handleClick() {
+    Survey selectedItem = searchList.getSelectionModel().getSelectedItem();
+    if (selectedItem != null) {
+      System.out.println("Selected: " + selectedItem.getSurveyId());
     }
   }
 
-  private void updateSearchResult(String query, FilteredList<String> filtered) {
-    filtered.setPredicate(userKey -> {
-      return userKey.toLowerCase().contains(query.toLowerCase());
-    });
+  @FXML
+  private void changeSetting() throws IOException {
+    App.setRoot("settings");
+  }
+
+  @FXML
+  private void switchToSurveys() throws IOException {
+    App.setRoot("list");
   }
 
 }
