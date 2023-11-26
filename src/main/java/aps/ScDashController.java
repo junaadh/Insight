@@ -16,10 +16,8 @@ import helper.Misc.prefix;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
@@ -45,7 +43,6 @@ public class ScDashController implements Initializable {
   @FXML
   private VBox defaultView;
 
-  private VBox mainContainer = new VBox(16);
   private Map<String, Survey> surveymap;
   BinHandler handler = new BinHandler();
   String scId;

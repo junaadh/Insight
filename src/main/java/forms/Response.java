@@ -19,6 +19,7 @@ public class Response implements Manipulator {
   }
 
   public Response(String[] args) {
+    this.responseId = args[0];
     this.qId = args[1];
     this.nid = args[2];
     this.surveyId = args[3];
@@ -47,7 +48,7 @@ public class Response implements Manipulator {
 
   public String buildInfo() {
     StringBuilder cur = new StringBuilder();
-    cur.append(prefix.RESPONSEID + this.responseId);
+    cur.append(prefix.RESPONSEID.getPrefix() + this.responseId);
     cur.append(prefix.QID.getPrefix() + this.qId);
     cur.append(prefix.NID.getPrefix() + this.nid);
     cur.append(prefix.SURVEYID.getPrefix() + this.surveyId);

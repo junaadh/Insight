@@ -415,7 +415,8 @@ public class SurveyCreationController implements Initializable {
     }
     Collections.sort(id);
     String last = id.get(id.size() - 1);
-    return "QX" + String.format("%05d", (Integer.parseInt(last) + 1));
+    int index = Integer.parseInt(last) + 1;
+    return "QX" + String.format("%05d", index);
   }
 
 }

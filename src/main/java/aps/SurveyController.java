@@ -40,7 +40,6 @@ public class SurveyController implements Initializable {
   private String surveyId;
 
   public void setSurveyId(String surveyId) {
-    System.out.println("settignscId" + surveyId);
     this.surveyId = surveyId;
   }
 
@@ -53,18 +52,17 @@ public class SurveyController implements Initializable {
   ArrayList<Question> qList = handler.valuesToList(qMap);
   ArrayList<Question> filtered = new ArrayList<>();
   Map<String, Response> loadedResp = BinHandler.loadResponse();
+  Map<String, String> userResponses = new HashMap<>();
 
   @Override
   public void initialize(URL location, ResourceBundle resource) {
     mainView.setSpacing(16);
     mainView.setPadding(new Insets(0, 20, 0, 20));
     this.setSurveyId(Session.getInstance().getSurveyid());
-    System.out.println("HERE TO CHECK SCID" + surveyId);
     Survey s = handler.searchSurveys(prefix.SURVEYID, surveyId);
     if (s == null) {
       try {
         goBack();
-        System.out.println("Going back yo");
       } catch (IOException e) {
         System.out.println("ERROR: Failed to navigate");
       }
@@ -74,8 +72,19 @@ public class SurveyController implements Initializable {
         filtered.add(q);
       }
     }
-    Response respCheck = handler.searchResponse(prefix.SURVEYID, surveyId);
-    if (respCheck != null) {
+    String query = prefix.NID.getPrefix() + Session.getInstance().getPerson().getNid() + prefix.SURVEYID.getPrefix()
+        + surveyId;
+    System.out.println("INFO: query string: " + query);
+
+    for (Map.Entry<String, Response> entry : loadedResp.entrySet()) {
+      if (entry.getKey().contains(query)) {
+        Response r = entry.getValue();
+        System.out.println(r.buildInfo());
+        userResponses.put(r.getQId(), r.getReponses());
+      }
+    }
+
+    if (!userResponses.isEmpty()) {
       for (Question q : filtered) {
         createSurveyWithResponse(q);
       }
@@ -96,6 +105,7 @@ public class SurveyController implements Initializable {
               surveyId,
               response);
           handler.addResponse(resp);
+          System.out.println("INFO: Added Response: " + resp.getResponseId() + " successfully");
         }
         try {
           goBack();
@@ -192,10 +202,8 @@ public class SurveyController implements Initializable {
         question.setText(op.getQText());
       }
 
-      answer.setOnAction(event -> {
-        String s = answer.getText();
-
-        responses.put(q.getQId(), s);
+      answer.textProperty().addListener((observable, oldValue, newValue) -> {
+        responses.put(q.getQId(), newValue);
       });
     } else if (type.equals("MCQ") || type.equals("Rank")) {
       VBox container = new VBox(16);
@@ -257,14 +265,10 @@ public class SurveyController implements Initializable {
       TextField answer = new TextField();
       container.getChildren().addAll(question, answer);
       container.setStyle("-fx-background-color: " + color + "; -fx-background-radius: 15");
-      // - container.setStyle("-fx-background-color: " + color);
-      // container.setStyle("-fx-background-radius: 15");
       mainView.getChildren().add(container);
       answer.setStyle("-fx-background-color: transparent; -fx-border-color: #000; -fx-border-radius: 15");
-      Response r = loadedResp.get(q.getQId());
-      if (r != null) {
-        answer.setText(r.getReponses());
-      }
+      answer.setText(userResponses.get(q.getQId()));
+
       if (q.getQtype().toLowerCase().equals("Openended".toLowerCase())) {
         Openended open = constructQuestion(q);
         question.setText(open.getQText());
@@ -303,12 +307,9 @@ public class SurveyController implements Initializable {
         opt4.setText(rank.getOptions().get(3));
       }
 
-      Response r = loadedResp.get(q.getQId());
-      if (r != null) {
-        for (RadioButton opt : new RadioButton[] { opt1, opt2, opt3, opt4 }) {
-          if (opt.getText().equals(r.getReponses())) {
-            opt.setSelected(true);
-          }
+      for (RadioButton opt : new RadioButton[] { opt1, opt2, opt3, opt4 }) {
+        if (opt.getText().equals(userResponses.get(q.getQId()))) {
+          opt.setSelected(true);
         }
       }
 

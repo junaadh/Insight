@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import helper.Session;
 import db.BinHandler;
 import forms.Admin;
 import forms.Person;
 import forms.SurveyCreator;
 import forms.User;
 import helper.Hasher;
-import helper.Session;
 import helper.Misc.prefix;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -74,8 +74,16 @@ public class SettingsController implements Initializable {
 
   @FXML
   private void logoutAction() throws IOException {
-    Session.getInstance().initSession();
-    App.setRoot("landing");
+    boolean a = Session.getInstance().isAdmin();
+    boolean sc = Session.getInstance().isSurveyCreator();
+
+    if (a) {
+      App.setRoot("adminDash");
+    } else if (sc) {
+      App.setRoot("scDash");
+    } else {
+      App.setRoot("dash");
+    }
   }
 
   private boolean infoCheck() {
