@@ -35,7 +35,12 @@ public class Question implements Manipulator {
   }
 
   public String getQId() {
-    return this.qId;
+    int len = "QX00000".length();
+    if (this.qId.length() > len) {
+      return this.qId.substring(0, len);
+    } else {
+      return this.qId;
+    }
   }
 
   public boolean getIsCompulsory() {
@@ -58,7 +63,7 @@ public class Question implements Manipulator {
     StringBuilder cur = new StringBuilder();
     cur.append(prefix.SURVEYID.getPrefix() + this.surveyId);
     cur.append(prefix.ISCOMPULSORY.getPrefix() + Misc.boolString(this.isCompulsory));
-    cur.append(prefix.QID.getPrefix() + this.qId);
+    cur.append(prefix.QID.getPrefix() + getQId());
     cur.append(prefix.QTEXT.getPrefix() + this.qText);
     cur.append(prefix.QTYPE.getPrefix() + this.qType);
     return cur.toString();

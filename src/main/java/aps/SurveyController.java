@@ -79,17 +79,17 @@ public class SurveyController implements Initializable {
     for (Map.Entry<String, Response> entry : loadedResp.entrySet()) {
       if (entry.getKey().contains(query)) {
         Response r = entry.getValue();
-        System.out.println(r.buildInfo());
-        userResponses.put(r.getQId(), r.getReponses());
+        userResponses.put(r.getQId().substring(0, r.getQId().length() - 1), r.getReponses());
       }
     }
 
     if (!userResponses.isEmpty()) {
       for (Question q : filtered) {
-        createSurveyWithResponse(q);
+        createSurveyWithResponse(q, userResponses.get(q.getQId()));
       }
     } else {
       for (Question q : filtered) {
+        System.out.println(q.buildInfo());
         createSurvey(q);
       }
       Button creatButton = new Button("Submit Response");
@@ -255,7 +255,7 @@ public class SurveyController implements Initializable {
     }
   }
 
-  private void createSurveyWithResponse(Question q) {
+  private void createSurveyWithResponse(Question q, String r) {
     String type = questiontype(q);
 
     if (type.equals("Openended") || type.equals("Demographic") || type.equals("Opinion")) {
@@ -267,7 +267,7 @@ public class SurveyController implements Initializable {
       container.setStyle("-fx-background-color: " + color + "; -fx-background-radius: 15");
       mainView.getChildren().add(container);
       answer.setStyle("-fx-background-color: transparent; -fx-border-color: #000; -fx-border-radius: 15");
-      answer.setText(userResponses.get(q.getQId()));
+      answer.setText(r);
 
       if (q.getQtype().toLowerCase().equals("Openended".toLowerCase())) {
         Openended open = constructQuestion(q);
@@ -308,7 +308,8 @@ public class SurveyController implements Initializable {
       }
 
       for (RadioButton opt : new RadioButton[] { opt1, opt2, opt3, opt4 }) {
-        if (opt.getText().equals(userResponses.get(q.getQId()))) {
+        if (opt.getText().equals(r)) {
+          System.out.println(r + q.getQId());
           opt.setSelected(true);
         }
       }
