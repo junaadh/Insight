@@ -58,6 +58,7 @@ public class AdminDashController implements Initializable {
     Session.getInstance().initSession();
     App.setRoot("landing");
   }
+  
 
   private void loadResources() {
     BinHandler handler = new BinHandler();

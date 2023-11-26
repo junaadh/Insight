@@ -71,6 +71,18 @@ public class SettingsController implements Initializable {
     }
 
   }
+  @FXML
+  private void goBack() throws IOException {
+    boolean sc = Session.getInstance().isSurveyCreator();
+    boolean a = Session.getInstance().getPerson().getIsAdmin();
+    if (sc) {
+      App.setRoot("scDash");
+    } else if (a) {
+      App.setRoot("adminDash");
+    } else {
+      App.setRoot("dash");
+    }
+  }
 
   @FXML
   private void logoutAction() throws IOException {
