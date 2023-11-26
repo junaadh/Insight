@@ -236,30 +236,77 @@ public class SurveyCreationController implements Initializable {
       });
     } else if (type.equals("Likert")) {
       String qId = genQuestionId(surveyQuestions);
-      TextField qtext = creator.createTextField("Enter your question");
+      TextField qtext = creator.createTextField("Enter your rating question here");
+      Slider slider = new Slider(1, 5, 3);
 
-      OptionComponent component = new OptionComponent();
+      // Show tick marks and labels
+      slider.setShowTickMarks(true);
+      slider.setShowTickLabels(true);
 
+      // Set the major tick unit to 1
+      slider.setMajorTickUnit(1);
+
+      // Set the minor tick count to 0
+      slider.setMinorTickCount(0);
+
+      // Enable snapping to ticks
+      slider.setSnapToTicks(true);
+
+      // Create a string converter to format the labels
+      slider.setLabelFormatter(new StringConverter<Double>() {
+        @Override
+        public String toString(Double value) {
+          // Return a string of rating options according to the value
+          int option = value.intValue();
+          switch (option) {
+            case 1: return "Not Important";
+            case 2: return "Less Important";
+            case 3: return "Average";
+            case 4: return "Important";
+            case 5: return "Very Important";
+            default: return "";
+          }
+        }
+
+        @Override
+        public Double fromString(String string) {
+          // Return the number of the rating option in the string
+          switch (string) {
+            case "not Important": return 1d;
+            case "less Important": return 2d;
+            case "Average": return 3d;
+            case "Important": return 4d;
+            case "Very Important": return 5d;
+            default: return 0d;
+          }
+        }
+      });
+
+      // Create Button
       Button addButton = creator.createButton("Add Question");
       Button deleteQuestion = creator.createButton("Delete Question");
       HBox buttons = new HBox(addButton, deleteQuestion);
       buttons.setSpacing(16);
       buttons.setPadding(new Insets(0, 0, 16, 0));
-      Node[] nodes = { qtext, component.getMainBox(), buttons };
+
+      // Create a layout and add the slider
+      Node[] nodes = {qtext, slider, buttons};
       VBox likert = creator.createVBox(nodes);
-      likert.setSpacing(16);
       questionBox.getChildren().add(likert);
-      ArrayList<String> optionList = component.getOptions();
+      OptionComponent component = new OptionComponent();
 
       addButton.setOnAction(event -> {
-        Likert q = new Likert(surveyId.getText(), false, qId, qtext.getText(), type, optionList);
+        // todo: check before add, so we can add disable
+        Likert q = new Likert(surveyId.getText(), false, qId, qtext.getText(), type);//, (int) slider.valueProperty().doubleValue());
         surveyQuestions.add(q);
+        //addButton.setDisable(true);
       });
       deleteQuestion.setOnAction(event -> {
         likert
-            .getChildren().clear();
+
+                .getChildren().clear();
         questionBox.getChildren().remove(likert);
-        Likert q = new Likert(surveyId.getText(), false, qId, qtext.getText(), type, optionList);
+        Likert q = new Likert(surveyId.getText(), false, qId, qtext.getText(), type);//, (int) slider.valueProperty().doubleValue());
         if (surveyQuestions.contains(q)) {
           surveyQuestions.remove(q);
         }

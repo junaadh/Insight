@@ -175,6 +175,8 @@ public class SurveyController implements Initializable {
   }
 
   private void createSurvey(Question q) {
+    /** This class will create the survey for user to submit once
+     */
     String type = questiontype(q);
 
     if (type.equals("Openended") || type.equals("Demographic") || type.equals("Opinion")) {
@@ -293,13 +295,74 @@ public class SurveyController implements Initializable {
           }
         }
       });
-      //slider.setValue(rating.getvalue());
       container.getChildren().addAll(question, slider);
       mainView.getChildren().add(container);
-
-
+      // update reponse value
+      slider.valueProperty().addListener((observable, oldvalue, newValue) -> {
+        if (newValue != null) {
+          String selected = ((Double) newValue).toString();
+          responses.put(q.getQId(), selected);
+        }
+      });
     } else if (type.equals("Likert")) {
-      // TODO:
+      VBox container = new VBox(15);
+      Text question = new Text();
+      Likert likert = constructQuestion(q);
+      question.setText(likert.getQText());
+      Slider slider = new Slider(1, 5, 3);
+
+      // Show tick marks and labels
+      slider.setShowTickMarks(true);
+      slider.setShowTickLabels(true);
+
+      // Set the major tick unit to 1
+      slider.setMajorTickUnit(1);
+
+      // Set the minor tick count to 0
+      slider.setMinorTickCount(0);
+
+      // Enable snapping to ticks
+      slider.setSnapToTicks(true);
+
+      // Create a string converter to format the labels
+      slider.setLabelFormatter(new StringConverter<Double>() {
+        @Override
+        public String toString(Double value) {
+          // Return a string of rating options according to the value
+          int option = value.intValue();
+          switch (option) {
+            case 1: return "Not Important";
+            case 2: return "Less Important";
+            case 3: return "Average";
+            case 4: return "Important";
+            case 5: return "Very Important";
+            default: return "";
+          }
+        }
+
+        @Override
+        public Double fromString(String string) {
+          // Return the number of the rating option in the string
+          switch (string) {
+            case "not Important": return 1d;
+            case "less Important": return 2d;
+            case "Average": return 3d;
+            case "Important": return 4d;
+            case "Very Important": return 5d;
+            default: return 0d;
+          }
+        }
+      });
+      container.getChildren().addAll(question, slider);
+      mainView.getChildren().add(container);
+      // update reponse value
+      slider.valueProperty().addListener((observable, oldvalue, newValue) -> {
+        if (newValue != null) {
+          String selected = ((Double) newValue).toString();
+          responses.put(q.getQId(), selected);
+        }
+      });
+
     } else if (type.equals("Polar")) {
       VBox container = new VBox(16);
       container.setPadding(new Insets(16));
@@ -327,6 +390,8 @@ public class SurveyController implements Initializable {
   }
 
   private void createSurveyWithResponse(Question q, String r) {
+    /** This class will create the submitted survey
+     */
     String type = questiontype(q);
 
     if (type.equals("Openended") || type.equals("Demographic") || type.equals("Opinion")) {
@@ -338,7 +403,9 @@ public class SurveyController implements Initializable {
       container.setStyle("-fx-background-color: " + color + "; -fx-background-radius: 15");
       mainView.getChildren().add(container);
       answer.setStyle("-fx-background-color: transparent; -fx-border-color: #000; -fx-border-radius: 15");
+      // set the answer
       answer.setText(r);
+      answer.setEditable(false);
 
       if (q.getQtype().toLowerCase().equals("Openended".toLowerCase())) {
         Openended open = constructQuestion(q);
@@ -350,6 +417,7 @@ public class SurveyController implements Initializable {
         Opinion op = constructQuestion(q);
         question.setText(op.getQText());
       }
+      question.setDisable(true);
     } else if (type.equals("MCQ") || type.equals("Rank")) {
       VBox container = new VBox(16);
       container.setPadding(new Insets(16));
@@ -378,15 +446,20 @@ public class SurveyController implements Initializable {
         opt4.setText(rank.getOptions().get(3));
       }
 
+
       for (RadioButton opt : new RadioButton[] { opt1, opt2, opt3, opt4 }) {
         if (opt.getText().equals(r)) {
           // System.out.println(r + q.getQId());
           opt.setSelected(true);
         }
       }
+      opt1.setDisable(true);
+      opt2.setDisable(true);
+      opt3.setDisable(true);
+      opt4.setDisable(true);
 
     } else if (type.equals("Rating")) {
-      VBox container = new VBox(16);
+      VBox container = new VBox(15);
       Text question = new Text();
       Rating rating = constructQuestion(q);
       question.setText(rating.getQText());
@@ -434,11 +507,64 @@ public class SurveyController implements Initializable {
           }
         }
       });
-      //slider.setValue(rating.getvalue());
+      slider.setValue( (int) Double.parseDouble(r));
+      slider.setDisable(true);
       container.getChildren().addAll(question, slider);
       mainView.getChildren().add(container);
     } else if (type.equals("Likert")) {
-      // TODO:
+      VBox container = new VBox(15);
+      Text question = new Text();
+      Likert likert = constructQuestion(q);
+      question.setText(likert.getQText());
+      Slider slider = new Slider(1, 5, 3);
+
+      // Show tick marks and labels
+      slider.setShowTickMarks(true);
+      slider.setShowTickLabels(true);
+
+      // Set the major tick unit to 1
+      slider.setMajorTickUnit(1);
+
+      // Set the minor tick count to 0
+      slider.setMinorTickCount(0);
+
+      // Enable snapping to ticks
+      slider.setSnapToTicks(true);
+
+      // Create a string converter to format the labels
+      slider.setLabelFormatter(new StringConverter<Double>() {
+        @Override
+        public String toString(Double value) {
+          // Return a string of rating options according to the value
+          int option = value.intValue();
+          switch (option) {
+            case 1: return "Not Important";
+            case 2: return "Less Important";
+            case 3: return "Average";
+            case 4: return "Important";
+            case 5: return "Very Important";
+            default: return "";
+          }
+        }
+
+        @Override
+        public Double fromString(String string) {
+          // Return the number of the rating option in the string
+          switch (string) {
+            case "not Important": return 1d;
+            case "less Important": return 2d;
+            case "Average": return 3d;
+            case "Important": return 4d;
+            case "Very Important": return 5d;
+            default: return 0d;
+          }
+        }
+      });
+      slider.setValue( (int) Double.parseDouble(r));
+      slider.setDisable(true);
+      container.getChildren().addAll(question, slider);
+      mainView.getChildren().add(container);
+
     } else if (type.equals("Polar")) {
       VBox container = new VBox(16);
       container.setPadding(new Insets(16));
@@ -456,6 +582,7 @@ public class SurveyController implements Initializable {
         if (btn.getText().equals(r)) {
           btn.setSelected(true);
         }
+        btn.setDisable(true);
       }
     }
   }
