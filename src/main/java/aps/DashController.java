@@ -104,4 +104,9 @@ public class DashController implements Initializable {
     App.setRoot("list");
   }
 
+  @FXML
+  private void switchToResponse() throws IOException {
+    App.setRoot("response");
+  }
+
 }

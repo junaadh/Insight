@@ -33,6 +33,7 @@ forms/Response.class
 forms/Survey.class
 helper/Hasher.class
 aps/ScListController.class
+aps/ResponseContoller.class
 aps/MySurveyController.class
 aps/ListController.class
 aps/LandingController.class
