@@ -251,7 +251,28 @@ public class SurveyController implements Initializable {
     } else if (type.equals("Likert")) {
       // TODO:
     } else if (type.equals("Polar")) {
-      // TODO:
+      VBox container = new VBox(16);
+      container.setPadding(new Insets(16));
+      container.setStyle("-fx-background-color: " + color + "; -fx-background-radius: 15");
+      Text question = new Text();
+      RadioButton trueButton = new RadioButton("true");
+      RadioButton falseButton = new RadioButton("false");
+      container.getChildren().addAll(question, trueButton, falseButton);
+      mainView.getChildren().add(container);
+
+      Polar polar = constructQuestion(q);
+      question.setText(polar.getQText());
+      ToggleGroup group = new ToggleGroup();
+      trueButton.setToggleGroup(group);
+      falseButton.setToggleGroup(group);
+
+      group.selectedToggleProperty().addListener((observable, oldvalue, newValue) -> {
+        if (newValue != null) {
+          String selected = ((RadioButton) newValue).getText();
+          responses.put(q.getQId(), selected);
+        }
+      });
+
     }
   }
 
@@ -309,7 +330,7 @@ public class SurveyController implements Initializable {
 
       for (RadioButton opt : new RadioButton[] { opt1, opt2, opt3, opt4 }) {
         if (opt.getText().equals(r)) {
-          System.out.println(r + q.getQId());
+          // System.out.println(r + q.getQId());
           opt.setSelected(true);
         }
       }
@@ -319,7 +340,23 @@ public class SurveyController implements Initializable {
     } else if (type.equals("Likert")) {
       // TODO:
     } else if (type.equals("Polar")) {
-      // TODO:
+      VBox container = new VBox(16);
+      container.setPadding(new Insets(16));
+      container.setStyle("-fx-background-color: " + color + "; -fx-background-radius: 15");
+      Text question = new Text();
+      RadioButton trueButton = new RadioButton("true");
+      RadioButton falseButton = new RadioButton("false");
+      container.getChildren().addAll(question, trueButton, falseButton);
+      mainView.getChildren().add(container);
+
+      Polar polar = constructQuestion(q);
+      question.setText(polar.getQText());
+
+      for (RadioButton btn : new RadioButton[] { trueButton, falseButton }) {
+        if (btn.getText().equals(r)) {
+          btn.setSelected(true);
+        }
+      }
     }
   }
 }
