@@ -25,12 +25,10 @@ import helper.Misc.prefix;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.util.StringConverter;
 
 public class SurveyController implements Initializable {
 
@@ -247,7 +245,59 @@ public class SurveyController implements Initializable {
       });
 
     } else if (type.equals("Rating")) {
-      // TODO:
+      VBox container = new VBox(16);
+      Text question = new Text();
+      Rating rating = constructQuestion(q);
+      question.setText(rating.getQText());
+      Slider slider = new Slider(1, 5, 3);
+
+      // Show tick marks and labels
+      slider.setShowTickMarks(true);
+      slider.setShowTickLabels(true);
+
+      // Set the major tick unit to 1
+      slider.setMajorTickUnit(1);
+
+      // Set the minor tick count to 0
+      slider.setMinorTickCount(0);
+
+      // Enable snapping to ticks
+      slider.setSnapToTicks(true);
+
+      // Create a string converter to format the labels
+      slider.setLabelFormatter(new StringConverter<Double>() {
+        @Override
+        public String toString(Double value) {
+          // Return a string of rating options according to the value
+          int option = value.intValue();
+          switch (option) {
+            case 1: return "Very poor";
+            case 2: return "Poor";
+            case 3: return "Average";
+            case 4: return "Good";
+            case 5: return "Very good";
+            default: return "";
+          }
+        }
+
+        @Override
+        public Double fromString(String string) {
+          // Return the number of the rating option in the string
+          switch (string) {
+            case "Very poor": return 1d;
+            case "Poor": return 2d;
+            case "Average": return 3d;
+            case "Good": return 4d;
+            case "Very good": return 5d;
+            default: return 0d;
+          }
+        }
+      });
+      //slider.setValue(rating.getvalue());
+      container.getChildren().addAll(question, slider);
+      mainView.getChildren().add(container);
+
+
     } else if (type.equals("Likert")) {
       // TODO:
     } else if (type.equals("Polar")) {
@@ -336,7 +386,57 @@ public class SurveyController implements Initializable {
       }
 
     } else if (type.equals("Rating")) {
-      // TODO:
+      VBox container = new VBox(16);
+      Text question = new Text();
+      Rating rating = constructQuestion(q);
+      question.setText(rating.getQText());
+      Slider slider = new Slider(1, 5, 3);
+
+      // Show tick marks and labels
+      slider.setShowTickMarks(true);
+      slider.setShowTickLabels(true);
+
+      // Set the major tick unit to 1
+      slider.setMajorTickUnit(1);
+
+      // Set the minor tick count to 0
+      slider.setMinorTickCount(0);
+
+      // Enable snapping to ticks
+      slider.setSnapToTicks(true);
+
+      // Create a string converter to format the labels
+      slider.setLabelFormatter(new StringConverter<Double>() {
+        @Override
+        public String toString(Double value) {
+          // Return a string of rating options according to the value
+          int option = value.intValue();
+          switch (option) {
+            case 1: return "Very poor";
+            case 2: return "Poor";
+            case 3: return "Average";
+            case 4: return "Good";
+            case 5: return "Very good";
+            default: return "";
+          }
+        }
+
+        @Override
+        public Double fromString(String string) {
+          // Return the number of the rating option in the string
+          switch (string) {
+            case "Very poor": return 1d;
+            case "Poor": return 2d;
+            case "Average": return 3d;
+            case "Good": return 4d;
+            case "Very good": return 5d;
+            default: return 0d;
+          }
+        }
+      });
+      //slider.setValue(rating.getvalue());
+      container.getChildren().addAll(question, slider);
+      mainView.getChildren().add(container);
     } else if (type.equals("Likert")) {
       // TODO:
     } else if (type.equals("Polar")) {
