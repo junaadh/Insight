@@ -31,6 +31,11 @@ public class Survey implements Manipulator {
     return this.scId;
   }
 
+  // for Session usage only
+  public String getNid() {
+    return null;
+  }
+
   public String buildInfo() {
     StringBuilder sur = new StringBuilder();
     sur.append(prefix.SURVEYID.getPrefix() + this.surveyId);

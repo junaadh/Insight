@@ -23,6 +23,7 @@ db/FilePicker$dbFiles.class
 db/FilePicker.class
 aps/SettingsController.class
 aps/ScDashController.class
+forms/SurveyResponse.class
 module-info.class
 db/BinHandler$1.class
 forms/Mcq.class

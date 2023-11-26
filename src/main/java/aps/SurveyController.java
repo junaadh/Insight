@@ -72,62 +72,71 @@ public class SurveyController implements Initializable {
         filtered.add(q);
       }
     }
-    String query = prefix.NID.getPrefix() + Session.getInstance().getPerson().getNid() + prefix.SURVEYID.getPrefix()
-        + surveyId;
-    System.out.println("INFO: query string: " + query);
-
-    for (Map.Entry<String, Response> entry : loadedResp.entrySet()) {
-      if (entry.getKey().contains(query)) {
-        Response r = entry.getValue();
-        userResponses.put(r.getQId().substring(0, r.getQId().length() - 1), r.getReponses());
+    if (Session.getInstance().getViewMode()) {
+      Map<String, String> viewMode = new HashMap<>();
+      String query = prefix.NID.getPrefix() + Session.getInstance().getViewUuid()
+          + prefix.SURVEYID.getPrefix() + Session.getInstance().getSurveyid();
+      System.out.println(query);
+      for (Map.Entry<String, Response> entry : loadedResp.entrySet()) {
+        if (entry.getKey().contains(query)) {
+          Response r = entry.getValue();
+          System.out.println("DEBUG: viewmode map qid: " + r.getQId());
+          viewMode.put(r.getQId().substring(0, r.getQId().length() - 1), r.getReponses());
+        }
       }
-    }
-
-    if (!userResponses.isEmpty()) {
       for (Question q : filtered) {
-        createSurveyWithResponse(q, userResponses.get(q.getQId()));
+        System.out.println("DEBUG: Question map qid: " + q.getQId());
+        createSurveyWithResponse(q, viewMode.get(q.getQId()));
       }
+
     } else {
-      for (Question q : filtered) {
-        System.out.println(q.buildInfo());
-        createSurvey(q);
-      }
-      Button creatButton = new Button("Submit Response");
-      creatButton.setPadding(new Insets(15, 30, 15, 30));
-      creatButton.setStyle("-fx-background-color: " + btnColor + "; -fx-background-radius: 50");
-      mainView.getChildren().add(creatButton);
-      creatButton.setOnAction(event -> {
-        for (Map.Entry<String, String> entry : responses.entrySet()) {
-          String qid = entry.getKey();
-          String response = entry.getValue();
+      String query = prefix.NID.getPrefix() + Session.getInstance().getPerson().getNid() + prefix.SURVEYID.getPrefix()
+          + surveyId;
+      System.out.println("INFO: query string: " + query);
 
-          Response resp = new Response(handler.genResponseId(), qid, Session.getInstance().getPerson().getNid(),
-              surveyId,
-              response);
-          handler.addResponse(resp);
-          System.out.println("INFO: Added Response: " + resp.getResponseId() + " successfully");
+      for (Map.Entry<String, Response> entry : loadedResp.entrySet()) {
+        if (entry.getKey().contains(query)) {
+          Response r = entry.getValue();
+          userResponses.put(r.getQId().substring(0, r.getQId().length() - 1), r.getReponses());
         }
-        try {
-          goBack();
-        } catch (IOException e) {
-          System.out.println("ERROR: Failed to change scene: " + e.getMessage());
+      }
+      if (!userResponses.isEmpty()) {
+        for (Question q : filtered) {
+          createSurveyWithResponse(q, userResponses.get(q.getQId()));
         }
-      });
+      } else {
+        for (Question q : filtered) {
+          System.out.println(q.buildInfo());
+          createSurvey(q);
+        }
+        Button creatButton = new Button("Submit Response");
+        creatButton.setPadding(new Insets(15, 30, 15, 30));
+        creatButton.setStyle("-fx-background-color: " + btnColor + "; -fx-background-radius: 50");
+        mainView.getChildren().add(creatButton);
+        creatButton.setOnAction(event -> {
+          for (Map.Entry<String, String> entry : responses.entrySet()) {
+            String qid = entry.getKey();
+            String response = entry.getValue();
+
+            Response resp = new Response(handler.genResponseId(), qid, Session.getInstance().getPerson().getNid(),
+                surveyId,
+                response);
+            handler.addResponse(resp);
+            System.out.println("INFO: Added Response: " + resp.getResponseId() + " successfully");
+          }
+          try {
+            goBack();
+          } catch (IOException e) {
+            System.out.println("ERROR: Failed to change scene: " + e.getMessage());
+          }
+        });
+      }
     }
   }
 
   @FXML
   private void goBack() throws IOException {
-    boolean sc = Session.getInstance().getPerson().getIsSurveyCreator();
-    boolean a = Session.getInstance().getPerson().getIsAdmin();
-
-    if (a) {
-      App.setRoot("adminDash");
-    } else if (sc) {
-      App.setRoot("scDash");
-    } else {
-      App.setRoot("dash");
-    }
+    App.setRoot("response");
   }
 
   private String questiontype(Question q) {
