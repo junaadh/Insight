@@ -9,6 +9,8 @@ public final class Session {
   private boolean isSurveyCreator = false;
   private boolean isUser = false;
   private String surveyId;
+  private boolean viewMode = false;
+  private String viewUuid;
 
   private Session() {
   }
@@ -30,7 +32,7 @@ public final class Session {
     this.isAdmin = person.getIsAdmin();
     this.isSurveyCreator = person.getIsSurveyCreator();
     this.isUser = !this.isAdmin && !this.isSurveyCreator ? true : false;
-
+    this.viewMode = false;
   }
 
   public Person getPerson() {
@@ -54,6 +56,7 @@ public final class Session {
     this.isAdmin = false;
     this.isSurveyCreator = false;
     this.isUser = false;
+    this.viewMode = false;
   }
 
   public String role() {
@@ -77,5 +80,26 @@ public final class Session {
 
   public String getSurveyid() {
     return this.surveyId;
+  }
+
+  public void setViewMode() {
+    this.viewMode = true;
+  }
+
+  public boolean getViewMode() {
+    return this.viewMode;
+  }
+
+  public void clearViewMode() {
+    this.viewMode = false;
+    this.viewUuid = null;
+  }
+
+  public void setViewUuid(String nid) {
+    this.viewUuid = nid;
+  }
+
+  public String getViewUuid() {
+    return this.viewUuid;
   }
 }
