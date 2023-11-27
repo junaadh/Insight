@@ -12,7 +12,6 @@ import forms.Admin;
 import forms.Person;
 import forms.Question;
 import forms.Response;
-import forms.Review;
 import forms.Survey;
 import forms.SurveyCreator;
 import forms.User;
@@ -84,18 +83,6 @@ public class BinHandler implements Manipulator {
     return null;
   }
 
-  public String addReviews(Review r) {
-    String data = r.buildInfo();
-    try {
-      if (read(dbFiles.REVIEWS, r.getRevId()) == null) {
-        return create(dbFiles.REVIEWS, data) ? "Review added successfully" : null;
-      }
-    } catch (IOException e) {
-      System.out.println("ERROR: Failed to create review");
-    }
-    return null;
-  }
-
   public <T extends Question> String addQuestions(T q) {
     String data = q.buildInfo();
     // System.out.println(data);
@@ -161,16 +148,6 @@ public class BinHandler implements Manipulator {
       return delete(dbFiles.SURVEYS, data);
     } catch (IOException e) {
       System.out.println("ERROR: Failed to remove survey: " + e.getMessage());
-    }
-    return false;
-  }
-
-  public boolean deleteReviews(Review r) {
-    String data = prefix.REVID.getPrefix() + r.getRevId();
-    try {
-      return delete(dbFiles.REVIEWS, data);
-    } catch (IOException e) {
-      System.out.println("ERROR: Failed to remove review: " + e.getMessage());
     }
     return false;
   }
@@ -262,19 +239,6 @@ public class BinHandler implements Manipulator {
     return null;
   }
 
-  public Review searchReviews(prefix field, String query) {
-    String queryStr = field.getPrefix() + query;
-    try {
-      String[] results = Misc.destructure(read(dbFiles.REVIEWS, queryStr));
-      return Misc.construct(results, Review.class);
-    } catch (IOException e) {
-      System.out.println("ERROR: Failed fetching data from db: " + e.getMessage());
-    } catch (Exception er) {
-      System.out.println("ERROR: Failed fetching datay from db: " + er.getMessage());
-    }
-    return null;
-  }
-
   public <T extends Question> T searchQuestions(prefix field, String query, Class<T> className) {
     String queryStr = field.getPrefix() + query;
     try {
@@ -362,20 +326,6 @@ public class BinHandler implements Manipulator {
       System.out.println("ERROR: Failed to update data: " + e.getMessage());
     }
     return sc;
-  }
-
-  public Review updateReview(Review r, String oldStr, String newStr, prefix field) {
-    Review rw = null;
-    String pref = field.getPrefix();
-    try {
-      Boolean bool = update(dbFiles.REVIEWS, pref + oldStr, pref + newStr, r.getRevId());
-      if (bool) {
-        rw = searchReviews(prefix.REVID, r.getRevId());
-      }
-    } catch (IOException e) {
-      System.out.println("ERROR: Failed to update data: " + e.getMessage());
-    }
-    return rw;
   }
 
   public Question updateQuestion(Question q, String oldStr, String newStr, prefix field) {
@@ -503,24 +453,6 @@ public class BinHandler implements Manipulator {
     return null;
   }
 
-  public String genReviewId() {
-    String id;
-    try {
-      ArrayList<String> ids = exportinfo(dbFiles.REVIEWS);
-      Collections.sort(ids);
-      String last = ids.isEmpty() ? "0" : ids.get(ids.size() - 1);
-      if (Misc.isIntegar(last)) {
-        id = String.format("%05d", Integer.parseInt(last) + 1);
-        return "RX" + id;
-      }
-    } catch (IOException e) {
-      System.out.println("ERROR: Failed to generate id: " + e.getMessage());
-    } catch (Exception er) {
-      System.out.println("ERROR: Failed to generate id" + er.getMessage());
-    }
-    return null;
-  }
-
   public String genQuestionId() {
     String id;
     try {
@@ -637,22 +569,6 @@ public class BinHandler implements Manipulator {
       System.out.println("ERROR: Failed to process data: " + er.getMessage());
     }
     return sMap;
-  }
-
-  public static Map<String, Review> loadReview() {
-    Map<String, Review> rMap = new HashMap<String, Review>();
-    try {
-      ArrayList<Review> data = exporter(dbFiles.REVIEWS);
-
-      for (Review r : data) {
-        rMap.put(r.getRevId() + "," + r.getUserId(), r);
-      }
-    } catch (IOException e) {
-      System.out.println("ERROR: Failed to process data: " + e.getMessage());
-    } catch (Exception er) {
-      System.out.println("ERROR: Failed to process data: " + er.getMessage());
-    }
-    return rMap;
   }
 
   public static Map<String, Question> loadQuestion() {
@@ -844,11 +760,6 @@ public class BinHandler implements Manipulator {
           id.add(s.getSurveyId().substring(2));
           break;
 
-        case REVIEWS:
-          Review r = Misc.construct(Misc.destructure(cur.toString()), Review.class);
-          id.add(r.getRevId().substring(2));
-          break;
-
         case QUESTIONS:
           Question q = Misc.construct(Misc.destructure(cur.toString()), Question.class);
           id.add(q.getQId().substring(2));
@@ -918,11 +829,6 @@ public class BinHandler implements Manipulator {
         case SURVEYS:
           Survey s = Misc.construct(Misc.destructure(cur.toString()), Survey.class);
           obj.add((T) s);
-          break;
-
-        case REVIEWS:
-          Review r = Misc.construct(Misc.destructure(cur.toString()), Review.class);
-          obj.add((T) r);
           break;
 
         case QUESTIONS:

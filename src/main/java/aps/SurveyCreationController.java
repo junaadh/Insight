@@ -9,7 +9,6 @@ import java.util.ResourceBundle;
 
 import db.BinHandler;
 import forms.*;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 
 import helper.Javax;
@@ -86,8 +85,7 @@ public class SurveyCreationController implements Initializable {
         } catch (IOException e) {
           System.out.println("ERROR: Failed to change scene " + e.getMessage());
         }
-      }
-      else {
+      } else {
         System.out.println("servay is empty");
       }
     });
@@ -259,12 +257,18 @@ public class SurveyCreationController implements Initializable {
           // Return a string of rating options according to the value
           int option = value.intValue();
           switch (option) {
-            case 1: return "Not Important";
-            case 2: return "Less Important";
-            case 3: return "Average";
-            case 4: return "Important";
-            case 5: return "Very Important";
-            default: return "";
+            case 1:
+              return "Not Important";
+            case 2:
+              return "Less Important";
+            case 3:
+              return "Average";
+            case 4:
+              return "Important";
+            case 5:
+              return "Very Important";
+            default:
+              return "";
           }
         }
 
@@ -272,12 +276,18 @@ public class SurveyCreationController implements Initializable {
         public Double fromString(String string) {
           // Return the number of the rating option in the string
           switch (string) {
-            case "not Important": return 1d;
-            case "less Important": return 2d;
-            case "Average": return 3d;
-            case "Important": return 4d;
-            case "Very Important": return 5d;
-            default: return 0d;
+            case "not Important":
+              return 1d;
+            case "less Important":
+              return 2d;
+            case "Average":
+              return 3d;
+            case "Important":
+              return 4d;
+            case "Very Important":
+              return 5d;
+            default:
+              return 0d;
           }
         }
       });
@@ -290,23 +300,25 @@ public class SurveyCreationController implements Initializable {
       buttons.setPadding(new Insets(0, 0, 16, 0));
 
       // Create a layout and add the slider
-      Node[] nodes = {qtext, slider, buttons};
+      Node[] nodes = { qtext, slider, buttons };
       VBox likert = creator.createVBox(nodes);
       questionBox.getChildren().add(likert);
       OptionComponent component = new OptionComponent();
 
       addButton.setOnAction(event -> {
         // todo: check before add, so we can add disable
-        Likert q = new Likert(surveyId.getText(), false, qId, qtext.getText(), type);//, (int) slider.valueProperty().doubleValue());
+        Likert q = new Likert(surveyId.getText(), false, qId, qtext.getText(), type);// , (int)
+                                                                                     // slider.valueProperty().doubleValue());
         surveyQuestions.add(q);
-        //addButton.setDisable(true);
+        // addButton.setDisable(true);
       });
       deleteQuestion.setOnAction(event -> {
         likert
 
-                .getChildren().clear();
+            .getChildren().clear();
         questionBox.getChildren().remove(likert);
-        Likert q = new Likert(surveyId.getText(), false, qId, qtext.getText(), type);//, (int) slider.valueProperty().doubleValue());
+        Likert q = new Likert(surveyId.getText(), false, qId, qtext.getText(), type);// , (int)
+                                                                                     // slider.valueProperty().doubleValue());
         if (surveyQuestions.contains(q)) {
           surveyQuestions.remove(q);
         }
@@ -337,12 +349,18 @@ public class SurveyCreationController implements Initializable {
           // Return a string of rating options according to the value
           int option = value.intValue();
           switch (option) {
-            case 1: return "Very poor";
-            case 2: return "Poor";
-            case 3: return "Average";
-            case 4: return "Good";
-            case 5: return "Very good";
-            default: return "";
+            case 1:
+              return "Very poor";
+            case 2:
+              return "Poor";
+            case 3:
+              return "Average";
+            case 4:
+              return "Good";
+            case 5:
+              return "Very good";
+            default:
+              return "";
           }
         }
 
@@ -350,12 +368,18 @@ public class SurveyCreationController implements Initializable {
         public Double fromString(String string) {
           // Return the number of the rating option in the string
           switch (string) {
-            case "Very poor": return 1d;
-            case "Poor": return 2d;
-            case "Average": return 3d;
-            case "Good": return 4d;
-            case "Very good": return 5d;
-            default: return 0d;
+            case "Very poor":
+              return 1d;
+            case "Poor":
+              return 2d;
+            case "Average":
+              return 3d;
+            case "Good":
+              return 4d;
+            case "Very good":
+              return 5d;
+            default:
+              return 0d;
           }
         }
       });
@@ -368,23 +392,25 @@ public class SurveyCreationController implements Initializable {
       buttons.setPadding(new Insets(0, 0, 16, 0));
 
       // Create a layout and add the slider
-      Node[] nodes = {qtext, slider, buttons};
+      Node[] nodes = { qtext, slider, buttons };
       VBox rating = creator.createVBox(nodes);
       questionBox.getChildren().add(rating);
       OptionComponent component = new OptionComponent();
 
       addButton.setOnAction(event -> {
         // todo: check before add, so we can add disable
-        Rating q = new Rating(surveyId.getText(), false, qId, qtext.getText(), type);//, (int) slider.valueProperty().doubleValue());
+        Rating q = new Rating(surveyId.getText(), false, qId, qtext.getText(), type);// , (int)
+                                                                                     // slider.valueProperty().doubleValue());
         surveyQuestions.add(q);
-        //addButton.setDisable(true);
+        // addButton.setDisable(true);
       });
       deleteQuestion.setOnAction(event -> {
         rating
 
-                .getChildren().clear();
+            .getChildren().clear();
         questionBox.getChildren().remove(rating);
-        Rating q = new Rating(surveyId.getText(), false, qId, qtext.getText(), type);//, (int) slider.valueProperty().doubleValue());
+        Rating q = new Rating(surveyId.getText(), false, qId, qtext.getText(), type);// , (int)
+                                                                                     // slider.valueProperty().doubleValue());
         if (surveyQuestions.contains(q)) {
           surveyQuestions.remove(q);
         }
@@ -412,9 +438,7 @@ public class SurveyCreationController implements Initializable {
         surveyQuestions.add(q);
       });
       deleteQuestion.setOnAction(event -> {
-        mcq
-
-            .getChildren().clear();
+        mcq.getChildren().clear();
         questionBox.getChildren().remove(mcq);
         Mcq q = new Mcq(surveyId.getText(), false, qId, qtext.getText(), type, optionList);
         if (surveyQuestions.contains(q)) {
