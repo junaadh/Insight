@@ -64,12 +64,13 @@ public class Javax {
 		}
 	}
 
-	public static <T extends Manipulator> void initializeTableRow(List<T> list,
-			TableView<T> table) {
+	@SuppressWarnings("unchecked")
+	public static <T> void initializeTableRow(List<?> list,
+			TableView<?> table) {
 		table.getItems().clear();
 		if (!list.isEmpty()) {
 
-			table.getItems().addAll(list);
+			((TableView<T>) table).getItems().addAll((List<T>) list);
 		}
 	}
 
@@ -83,4 +84,3 @@ public class Javax {
 	// }
 
 }
-

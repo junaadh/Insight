@@ -123,4 +123,15 @@ public class ScDashController implements Initializable {
     App.setRoot("userList");
   }
 
+  @FXML
+  private void switchToResponse() throws IOException {
+    Session.getInstance().setViewMode();
+    App.setRoot("response");
+  }
+
+  @FXML
+  private void switchToMyResponse() throws IOException {
+    App.setRoot("response");
+  }
+
 }

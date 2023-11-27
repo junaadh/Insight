@@ -8,18 +8,8 @@ import java.util.Collections;
 import java.util.ResourceBundle;
 
 import db.BinHandler;
-import forms.Demographic;
-import forms.Likert;
-import forms.Mcq;
-import forms.Openended;
-import forms.Polar;
-import forms.Opinion;
-import forms.Person;
-import forms.Question;
-import forms.Rank;
-import forms.Survey;
-import forms.SurveyCreator;
-import javafx.scene.control.TextField;
+import forms.*;
+import javafx.scene.control.*;
 
 import helper.Javax;
 import helper.Session;
@@ -30,10 +20,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.util.StringConverter;
 
 public class SurveyCreationController implements Initializable {
 
@@ -96,6 +85,8 @@ public class SurveyCreationController implements Initializable {
         } catch (IOException e) {
           System.out.println("ERROR: Failed to change scene " + e.getMessage());
         }
+      } else {
+        System.out.println("servay is empty");
       }
     });
   }
@@ -243,30 +234,91 @@ public class SurveyCreationController implements Initializable {
       });
     } else if (type.equals("Likert")) {
       String qId = genQuestionId(surveyQuestions);
-      TextField qtext = creator.createTextField("Enter your question");
+      TextField qtext = creator.createTextField("Enter your rating question here");
+      Slider slider = new Slider(1, 5, 3);
 
-      OptionComponent component = new OptionComponent();
+      // Show tick marks and labels
+      slider.setShowTickMarks(true);
+      slider.setShowTickLabels(true);
 
+      // Set the major tick unit to 1
+      slider.setMajorTickUnit(1);
+
+      // Set the minor tick count to 0
+      slider.setMinorTickCount(0);
+
+      // Enable snapping to ticks
+      slider.setSnapToTicks(true);
+
+      // Create a string converter to format the labels
+      slider.setLabelFormatter(new StringConverter<Double>() {
+        @Override
+        public String toString(Double value) {
+          // Return a string of rating options according to the value
+          int option = value.intValue();
+          switch (option) {
+            case 1:
+              return "Not Important";
+            case 2:
+              return "Less Important";
+            case 3:
+              return "Average";
+            case 4:
+              return "Important";
+            case 5:
+              return "Very Important";
+            default:
+              return "";
+          }
+        }
+
+        @Override
+        public Double fromString(String string) {
+          // Return the number of the rating option in the string
+          switch (string) {
+            case "not Important":
+              return 1d;
+            case "less Important":
+              return 2d;
+            case "Average":
+              return 3d;
+            case "Important":
+              return 4d;
+            case "Very Important":
+              return 5d;
+            default:
+              return 0d;
+          }
+        }
+      });
+
+      // Create Button
       Button addButton = creator.createButton("Add Question");
       Button deleteQuestion = creator.createButton("Delete Question");
       HBox buttons = new HBox(addButton, deleteQuestion);
       buttons.setSpacing(16);
       buttons.setPadding(new Insets(0, 0, 16, 0));
-      Node[] nodes = { qtext, component.getMainBox(), buttons };
+
+      // Create a layout and add the slider
+      Node[] nodes = { qtext, slider, buttons };
       VBox likert = creator.createVBox(nodes);
-      likert.setSpacing(16);
       questionBox.getChildren().add(likert);
-      ArrayList<String> optionList = component.getOptions();
+      OptionComponent component = new OptionComponent();
 
       addButton.setOnAction(event -> {
-        Likert q = new Likert(surveyId.getText(), false, qId, qtext.getText(), type, optionList);
+        // todo: check before add, so we can add disable
+        Likert q = new Likert(surveyId.getText(), false, qId, qtext.getText(), type);// , (int)
+                                                                                     // slider.valueProperty().doubleValue());
         surveyQuestions.add(q);
+        // addButton.setDisable(true);
       });
       deleteQuestion.setOnAction(event -> {
         likert
+
             .getChildren().clear();
         questionBox.getChildren().remove(likert);
-        Likert q = new Likert(surveyId.getText(), false, qId, qtext.getText(), type, optionList);
+        Likert q = new Likert(surveyId.getText(), false, qId, qtext.getText(), type);// , (int)
+                                                                                     // slider.valueProperty().doubleValue());
         if (surveyQuestions.contains(q)) {
           surveyQuestions.remove(q);
         }
@@ -274,35 +326,96 @@ public class SurveyCreationController implements Initializable {
 
     } else if (type.equals("Rating")) {
       String qId = genQuestionId(surveyQuestions);
-      TextField qtext = creator.createTextField("Enter your question");
+      TextField qtext = creator.createTextField("Enter your rating question here");
+      Slider slider = new Slider(1, 5, 3);
 
-      OptionComponent component = new OptionComponent();
+      // Show tick marks and labels
+      slider.setShowTickMarks(true);
+      slider.setShowTickLabels(true);
 
+      // Set the major tick unit to 1
+      slider.setMajorTickUnit(1);
+
+      // Set the minor tick count to 0
+      slider.setMinorTickCount(0);
+
+      // Enable snapping to ticks
+      slider.setSnapToTicks(true);
+
+      // Create a string converter to format the labels
+      slider.setLabelFormatter(new StringConverter<Double>() {
+        @Override
+        public String toString(Double value) {
+          // Return a string of rating options according to the value
+          int option = value.intValue();
+          switch (option) {
+            case 1:
+              return "Very poor";
+            case 2:
+              return "Poor";
+            case 3:
+              return "Average";
+            case 4:
+              return "Good";
+            case 5:
+              return "Very good";
+            default:
+              return "";
+          }
+        }
+
+        @Override
+        public Double fromString(String string) {
+          // Return the number of the rating option in the string
+          switch (string) {
+            case "Very poor":
+              return 1d;
+            case "Poor":
+              return 2d;
+            case "Average":
+              return 3d;
+            case "Good":
+              return 4d;
+            case "Very good":
+              return 5d;
+            default:
+              return 0d;
+          }
+        }
+      });
+
+      // Create Button
       Button addButton = creator.createButton("Add Question");
       Button deleteQuestion = creator.createButton("Delete Question");
       HBox buttons = new HBox(addButton, deleteQuestion);
       buttons.setSpacing(16);
       buttons.setPadding(new Insets(0, 0, 16, 0));
-      Node[] nodes = { qtext, component.getMainBox(), buttons };
-      VBox mcq = creator.createVBox(nodes);
-      mcq.setSpacing(16);
-      questionBox.getChildren().add(mcq);
-      ArrayList<String> optionList = component.getOptions();
+
+      // Create a layout and add the slider
+      Node[] nodes = { qtext, slider, buttons };
+      VBox rating = creator.createVBox(nodes);
+      questionBox.getChildren().add(rating);
+      OptionComponent component = new OptionComponent();
 
       addButton.setOnAction(event -> {
-        Likert q = new Likert(surveyId.getText(), false, qId, qtext.getText(), type, optionList);
+        // todo: check before add, so we can add disable
+        Rating q = new Rating(surveyId.getText(), false, qId, qtext.getText(), type);// , (int)
+                                                                                     // slider.valueProperty().doubleValue());
         surveyQuestions.add(q);
+        // addButton.setDisable(true);
       });
       deleteQuestion.setOnAction(event -> {
-        mcq
+        rating
 
             .getChildren().clear();
-        questionBox.getChildren().remove(mcq);
-        Likert q = new Likert(surveyId.getText(), false, qId, qtext.getText(), type, optionList);
+        questionBox.getChildren().remove(rating);
+        Rating q = new Rating(surveyId.getText(), false, qId, qtext.getText(), type);// , (int)
+                                                                                     // slider.valueProperty().doubleValue());
         if (surveyQuestions.contains(q)) {
           surveyQuestions.remove(q);
         }
       });
+
     } else if (type.equals("MCQ")) {
       String qId = genQuestionId(surveyQuestions);
       TextField qtext = creator.createTextField("Enter your question");
@@ -325,9 +438,7 @@ public class SurveyCreationController implements Initializable {
         surveyQuestions.add(q);
       });
       deleteQuestion.setOnAction(event -> {
-        mcq
-
-            .getChildren().clear();
+        mcq.getChildren().clear();
         questionBox.getChildren().remove(mcq);
         Mcq q = new Mcq(surveyId.getText(), false, qId, qtext.getText(), type, optionList);
         if (surveyQuestions.contains(q)) {

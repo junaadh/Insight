@@ -25,12 +25,10 @@ import helper.Misc.prefix;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.util.StringConverter;
 
 public class SurveyController implements Initializable {
 
@@ -72,62 +70,71 @@ public class SurveyController implements Initializable {
         filtered.add(q);
       }
     }
-    String query = prefix.NID.getPrefix() + Session.getInstance().getPerson().getNid() + prefix.SURVEYID.getPrefix()
-        + surveyId;
-    System.out.println("INFO: query string: " + query);
-
-    for (Map.Entry<String, Response> entry : loadedResp.entrySet()) {
-      if (entry.getKey().contains(query)) {
-        Response r = entry.getValue();
-        userResponses.put(r.getQId().substring(0, r.getQId().length() - 1), r.getReponses());
+    if (Session.getInstance().getViewMode()) {
+      Map<String, String> viewMode = new HashMap<>();
+      String query = prefix.NID.getPrefix() + Session.getInstance().getViewUuid()
+          + prefix.SURVEYID.getPrefix() + Session.getInstance().getSurveyid();
+      System.out.println(query);
+      for (Map.Entry<String, Response> entry : loadedResp.entrySet()) {
+        if (entry.getKey().contains(query)) {
+          Response r = entry.getValue();
+          System.out.println("DEBUG: viewmode map qid: " + r.getQId());
+          viewMode.put(r.getQId().substring(0, r.getQId().length() - 1), r.getReponses());
+        }
       }
-    }
-
-    if (!userResponses.isEmpty()) {
       for (Question q : filtered) {
-        createSurveyWithResponse(q, userResponses.get(q.getQId()));
+        System.out.println("DEBUG: Question map qid: " + q.getQId());
+        createSurveyWithResponse(q, viewMode.get(q.getQId()));
       }
+
     } else {
-      for (Question q : filtered) {
-        System.out.println(q.buildInfo());
-        createSurvey(q);
-      }
-      Button creatButton = new Button("Submit Response");
-      creatButton.setPadding(new Insets(15, 30, 15, 30));
-      creatButton.setStyle("-fx-background-color: " + btnColor + "; -fx-background-radius: 50");
-      mainView.getChildren().add(creatButton);
-      creatButton.setOnAction(event -> {
-        for (Map.Entry<String, String> entry : responses.entrySet()) {
-          String qid = entry.getKey();
-          String response = entry.getValue();
+      String query = prefix.NID.getPrefix() + Session.getInstance().getPerson().getNid() + prefix.SURVEYID.getPrefix()
+          + surveyId;
+      System.out.println("INFO: query string: " + query);
 
-          Response resp = new Response(handler.genResponseId(), qid, Session.getInstance().getPerson().getNid(),
-              surveyId,
-              response);
-          handler.addResponse(resp);
-          System.out.println("INFO: Added Response: " + resp.getResponseId() + " successfully");
+      for (Map.Entry<String, Response> entry : loadedResp.entrySet()) {
+        if (entry.getKey().contains(query)) {
+          Response r = entry.getValue();
+          userResponses.put(r.getQId().substring(0, r.getQId().length() - 1), r.getReponses());
         }
-        try {
-          goBack();
-        } catch (IOException e) {
-          System.out.println("ERROR: Failed to change scene: " + e.getMessage());
+      }
+      if (!userResponses.isEmpty()) {
+        for (Question q : filtered) {
+          createSurveyWithResponse(q, userResponses.get(q.getQId()));
         }
-      });
+      } else {
+        for (Question q : filtered) {
+          System.out.println(q.buildInfo());
+          createSurvey(q);
+        }
+        Button creatButton = new Button("Submit Response");
+        creatButton.setPadding(new Insets(15, 30, 15, 30));
+        creatButton.setStyle("-fx-background-color: " + btnColor + "; -fx-background-radius: 50");
+        mainView.getChildren().add(creatButton);
+        creatButton.setOnAction(event -> {
+          for (Map.Entry<String, String> entry : responses.entrySet()) {
+            String qid = entry.getKey();
+            String response = entry.getValue();
+
+            Response resp = new Response(handler.genResponseId(), qid, Session.getInstance().getPerson().getNid(),
+                surveyId,
+                response);
+            handler.addResponse(resp);
+            System.out.println("INFO: Added Response: " + resp.getResponseId() + " successfully");
+          }
+          try {
+            goBack();
+          } catch (IOException e) {
+            System.out.println("ERROR: Failed to change scene: " + e.getMessage());
+          }
+        });
+      }
     }
   }
 
   @FXML
   private void goBack() throws IOException {
-    boolean sc = Session.getInstance().getPerson().getIsSurveyCreator();
-    boolean a = Session.getInstance().getPerson().getIsAdmin();
-
-    if (a) {
-      App.setRoot("adminDash");
-    } else if (sc) {
-      App.setRoot("scDash");
-    } else {
-      App.setRoot("dash");
-    }
+    App.setRoot("response");
   }
 
   private String questiontype(Question q) {
@@ -177,6 +184,8 @@ public class SurveyController implements Initializable {
   }
 
   private void createSurvey(Question q) {
+    /** This class will create the survey for user to submit once
+     */
     String type = questiontype(q);
 
     if (type.equals("Openended") || type.equals("Demographic") || type.equals("Opinion")) {
@@ -247,15 +256,151 @@ public class SurveyController implements Initializable {
       });
 
     } else if (type.equals("Rating")) {
-      // TODO:
+      VBox container = new VBox(16);
+      Text question = new Text();
+      Rating rating = constructQuestion(q);
+      question.setText(rating.getQText());
+      Slider slider = new Slider(1, 5, 3);
+
+      // Show tick marks and labels
+      slider.setShowTickMarks(true);
+      slider.setShowTickLabels(true);
+
+      // Set the major tick unit to 1
+      slider.setMajorTickUnit(1);
+
+      // Set the minor tick count to 0
+      slider.setMinorTickCount(0);
+
+      // Enable snapping to ticks
+      slider.setSnapToTicks(true);
+
+      // Create a string converter to format the labels
+      slider.setLabelFormatter(new StringConverter<Double>() {
+        @Override
+        public String toString(Double value) {
+          // Return a string of rating options according to the value
+          int option = value.intValue();
+          switch (option) {
+            case 1: return "Very poor";
+            case 2: return "Poor";
+            case 3: return "Average";
+            case 4: return "Good";
+            case 5: return "Very good";
+            default: return "";
+          }
+        }
+
+        @Override
+        public Double fromString(String string) {
+          // Return the number of the rating option in the string
+          switch (string) {
+            case "Very poor": return 1d;
+            case "Poor": return 2d;
+            case "Average": return 3d;
+            case "Good": return 4d;
+            case "Very good": return 5d;
+            default: return 0d;
+          }
+        }
+      });
+      container.getChildren().addAll(question, slider);
+      mainView.getChildren().add(container);
+      // update reponse value
+      slider.valueProperty().addListener((observable, oldvalue, newValue) -> {
+        if (newValue != null) {
+          String selected = ((Double) newValue).toString();
+          responses.put(q.getQId(), selected);
+        }
+      });
     } else if (type.equals("Likert")) {
-      // TODO:
+      VBox container = new VBox(15);
+      Text question = new Text();
+      Likert likert = constructQuestion(q);
+      question.setText(likert.getQText());
+      Slider slider = new Slider(1, 5, 3);
+
+      // Show tick marks and labels
+      slider.setShowTickMarks(true);
+      slider.setShowTickLabels(true);
+
+      // Set the major tick unit to 1
+      slider.setMajorTickUnit(1);
+
+      // Set the minor tick count to 0
+      slider.setMinorTickCount(0);
+
+      // Enable snapping to ticks
+      slider.setSnapToTicks(true);
+
+      // Create a string converter to format the labels
+      slider.setLabelFormatter(new StringConverter<Double>() {
+        @Override
+        public String toString(Double value) {
+          // Return a string of rating options according to the value
+          int option = value.intValue();
+          switch (option) {
+            case 1: return "Not Important";
+            case 2: return "Less Important";
+            case 3: return "Average";
+            case 4: return "Important";
+            case 5: return "Very Important";
+            default: return "";
+          }
+        }
+
+        @Override
+        public Double fromString(String string) {
+          // Return the number of the rating option in the string
+          switch (string) {
+            case "not Important": return 1d;
+            case "less Important": return 2d;
+            case "Average": return 3d;
+            case "Important": return 4d;
+            case "Very Important": return 5d;
+            default: return 0d;
+          }
+        }
+      });
+      container.getChildren().addAll(question, slider);
+      mainView.getChildren().add(container);
+      // update reponse value
+      slider.valueProperty().addListener((observable, oldvalue, newValue) -> {
+        if (newValue != null) {
+          String selected = ((Double) newValue).toString();
+          responses.put(q.getQId(), selected);
+        }
+      });
+
     } else if (type.equals("Polar")) {
-      // TODO:
+      VBox container = new VBox(16);
+      container.setPadding(new Insets(16));
+      container.setStyle("-fx-background-color: " + color + "; -fx-background-radius: 15");
+      Text question = new Text();
+      RadioButton trueButton = new RadioButton("true");
+      RadioButton falseButton = new RadioButton("false");
+      container.getChildren().addAll(question, trueButton, falseButton);
+      mainView.getChildren().add(container);
+
+      Polar polar = constructQuestion(q);
+      question.setText(polar.getQText());
+      ToggleGroup group = new ToggleGroup();
+      trueButton.setToggleGroup(group);
+      falseButton.setToggleGroup(group);
+
+      group.selectedToggleProperty().addListener((observable, oldvalue, newValue) -> {
+        if (newValue != null) {
+          String selected = ((RadioButton) newValue).getText();
+          responses.put(q.getQId(), selected);
+        }
+      });
+
     }
   }
 
   private void createSurveyWithResponse(Question q, String r) {
+    /** This class will create the submitted survey
+     */
     String type = questiontype(q);
 
     if (type.equals("Openended") || type.equals("Demographic") || type.equals("Opinion")) {
@@ -267,7 +412,9 @@ public class SurveyController implements Initializable {
       container.setStyle("-fx-background-color: " + color + "; -fx-background-radius: 15");
       mainView.getChildren().add(container);
       answer.setStyle("-fx-background-color: transparent; -fx-border-color: #000; -fx-border-radius: 15");
+      // set the answer
       answer.setText(r);
+      answer.setEditable(false);
 
       if (q.getQtype().toLowerCase().equals("Openended".toLowerCase())) {
         Openended open = constructQuestion(q);
@@ -279,6 +426,7 @@ public class SurveyController implements Initializable {
         Opinion op = constructQuestion(q);
         question.setText(op.getQText());
       }
+      question.setDisable(true);
     } else if (type.equals("MCQ") || type.equals("Rank")) {
       VBox container = new VBox(16);
       container.setPadding(new Insets(16));
@@ -307,19 +455,144 @@ public class SurveyController implements Initializable {
         opt4.setText(rank.getOptions().get(3));
       }
 
+
       for (RadioButton opt : new RadioButton[] { opt1, opt2, opt3, opt4 }) {
         if (opt.getText().equals(r)) {
-          System.out.println(r + q.getQId());
+          // System.out.println(r + q.getQId());
           opt.setSelected(true);
         }
       }
+      opt1.setDisable(true);
+      opt2.setDisable(true);
+      opt3.setDisable(true);
+      opt4.setDisable(true);
 
     } else if (type.equals("Rating")) {
-      // TODO:
+      VBox container = new VBox(15);
+      Text question = new Text();
+      Rating rating = constructQuestion(q);
+      question.setText(rating.getQText());
+      Slider slider = new Slider(1, 5, 3);
+
+      // Show tick marks and labels
+      slider.setShowTickMarks(true);
+      slider.setShowTickLabels(true);
+
+      // Set the major tick unit to 1
+      slider.setMajorTickUnit(1);
+
+      // Set the minor tick count to 0
+      slider.setMinorTickCount(0);
+
+      // Enable snapping to ticks
+      slider.setSnapToTicks(true);
+
+      // Create a string converter to format the labels
+      slider.setLabelFormatter(new StringConverter<Double>() {
+        @Override
+        public String toString(Double value) {
+          // Return a string of rating options according to the value
+          int option = value.intValue();
+          switch (option) {
+            case 1: return "Very poor";
+            case 2: return "Poor";
+            case 3: return "Average";
+            case 4: return "Good";
+            case 5: return "Very good";
+            default: return "";
+          }
+        }
+
+        @Override
+        public Double fromString(String string) {
+          // Return the number of the rating option in the string
+          switch (string) {
+            case "Very poor": return 1d;
+            case "Poor": return 2d;
+            case "Average": return 3d;
+            case "Good": return 4d;
+            case "Very good": return 5d;
+            default: return 0d;
+          }
+        }
+      });
+      slider.setValue( (int) Double.parseDouble(r));
+      slider.setDisable(true);
+      container.getChildren().addAll(question, slider);
+      mainView.getChildren().add(container);
     } else if (type.equals("Likert")) {
-      // TODO:
+      VBox container = new VBox(15);
+      Text question = new Text();
+      Likert likert = constructQuestion(q);
+      question.setText(likert.getQText());
+      Slider slider = new Slider(1, 5, 3);
+
+      // Show tick marks and labels
+      slider.setShowTickMarks(true);
+      slider.setShowTickLabels(true);
+
+      // Set the major tick unit to 1
+      slider.setMajorTickUnit(1);
+
+      // Set the minor tick count to 0
+      slider.setMinorTickCount(0);
+
+      // Enable snapping to ticks
+      slider.setSnapToTicks(true);
+
+      // Create a string converter to format the labels
+      slider.setLabelFormatter(new StringConverter<Double>() {
+        @Override
+        public String toString(Double value) {
+          // Return a string of rating options according to the value
+          int option = value.intValue();
+          switch (option) {
+            case 1: return "Not Important";
+            case 2: return "Less Important";
+            case 3: return "Average";
+            case 4: return "Important";
+            case 5: return "Very Important";
+            default: return "";
+          }
+        }
+
+        @Override
+        public Double fromString(String string) {
+          // Return the number of the rating option in the string
+          switch (string) {
+            case "not Important": return 1d;
+            case "less Important": return 2d;
+            case "Average": return 3d;
+            case "Important": return 4d;
+            case "Very Important": return 5d;
+            default: return 0d;
+          }
+        }
+      });
+      slider.setValue( (int) Double.parseDouble(r));
+      slider.setDisable(true);
+      container.getChildren().addAll(question, slider);
+      mainView.getChildren().add(container);
+
     } else if (type.equals("Polar")) {
-      // TODO:
+      VBox container = new VBox(16);
+      container.setPadding(new Insets(16));
+      container.setStyle("-fx-background-color: " + color + "; -fx-background-radius: 15");
+      Text question = new Text();
+      RadioButton trueButton = new RadioButton("true");
+      RadioButton falseButton = new RadioButton("false");
+      container.getChildren().addAll(question, trueButton, falseButton);
+      mainView.getChildren().add(container);
+
+      Polar polar = constructQuestion(q);
+      question.setText(polar.getQText());
+
+      for (RadioButton btn : new RadioButton[] { trueButton, falseButton }) {
+        if (btn.getText().equals(r)) {
+          btn.setSelected(true);
+        }
+        btn.setDisable(true);
+      }
     }
   }
 }
