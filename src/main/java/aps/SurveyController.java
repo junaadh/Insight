@@ -113,16 +113,17 @@ public class SurveyController implements Initializable {
         creatButton.setStyle("-fx-background-color: " + btnColor + "; -fx-background-radius: 50");
         mainView.getChildren().add(creatButton);
         creatButton.setOnAction(event -> {
+          var a = handler.genResponseId();
           for (Map.Entry<String, String> entry : responses.entrySet()) {
             String qid = entry.getKey();
             String response = entry.getValue();
 
-            Response resp = new Response(handler.genResponseId(), qid, Session.getInstance().getPerson().getNid(),
+            Response resp = new Response(a, qid, Session.getInstance().getPerson().getNid(),
                 surveyId,
                 response);
-            handler.addResponse(resp);
-            System.out.println("INFO: Added Response: " + resp.getResponseId() + " successfully");
-          }
+                handler.addResponse(resp);
+                System.out.println("INFO: Added Response: " + resp.getResponseId() + " successfully");
+              }
           try {
             goBack();
           } catch (IOException e) {
@@ -135,8 +136,8 @@ public class SurveyController implements Initializable {
 
   @FXML
   private void goBack() throws IOException {
-    if (Misc.inResponse == true){
-       App.setRoot("response");
+    if (Misc.inResponse == true) {
+      App.setRoot("response");
     } else {
       App.setRoot("list");
     }
@@ -189,7 +190,8 @@ public class SurveyController implements Initializable {
   }
 
   private void createSurvey(Question q) {
-    /** This class will create the survey for user to submit once
+    /**
+     * This class will create the survey for user to submit once
      */
     String type = questiontype(q);
 
@@ -287,12 +289,18 @@ public class SurveyController implements Initializable {
           // Return a string of rating options according to the value
           int option = value.intValue();
           switch (option) {
-            case 1: return "Very poor";
-            case 2: return "Poor";
-            case 3: return "Average";
-            case 4: return "Good";
-            case 5: return "Very good";
-            default: return "";
+            case 1:
+              return "Very poor";
+            case 2:
+              return "Poor";
+            case 3:
+              return "Average";
+            case 4:
+              return "Good";
+            case 5:
+              return "Very good";
+            default:
+              return "";
           }
         }
 
@@ -300,12 +308,18 @@ public class SurveyController implements Initializable {
         public Double fromString(String string) {
           // Return the number of the rating option in the string
           switch (string) {
-            case "Very poor": return 1d;
-            case "Poor": return 2d;
-            case "Average": return 3d;
-            case "Good": return 4d;
-            case "Very good": return 5d;
-            default: return 0d;
+            case "Very poor":
+              return 1d;
+            case "Poor":
+              return 2d;
+            case "Average":
+              return 3d;
+            case "Good":
+              return 4d;
+            case "Very good":
+              return 5d;
+            default:
+              return 0d;
           }
         }
       });
@@ -345,12 +359,18 @@ public class SurveyController implements Initializable {
           // Return a string of rating options according to the value
           int option = value.intValue();
           switch (option) {
-            case 1: return "Not Important";
-            case 2: return "Less Important";
-            case 3: return "Average";
-            case 4: return "Important";
-            case 5: return "Very Important";
-            default: return "";
+            case 1:
+              return "Not Important";
+            case 2:
+              return "Less Important";
+            case 3:
+              return "Average";
+            case 4:
+              return "Important";
+            case 5:
+              return "Very Important";
+            default:
+              return "";
           }
         }
 
@@ -358,12 +378,18 @@ public class SurveyController implements Initializable {
         public Double fromString(String string) {
           // Return the number of the rating option in the string
           switch (string) {
-            case "not Important": return 1d;
-            case "less Important": return 2d;
-            case "Average": return 3d;
-            case "Important": return 4d;
-            case "Very Important": return 5d;
-            default: return 0d;
+            case "not Important":
+              return 1d;
+            case "less Important":
+              return 2d;
+            case "Average":
+              return 3d;
+            case "Important":
+              return 4d;
+            case "Very Important":
+              return 5d;
+            default:
+              return 0d;
           }
         }
       });
@@ -404,7 +430,8 @@ public class SurveyController implements Initializable {
   }
 
   private void createSurveyWithResponse(Question q, String r) {
-    /** This class will create the submitted survey
+    /**
+     * This class will create the submitted survey
      */
     String type = questiontype(q);
 
@@ -460,7 +487,6 @@ public class SurveyController implements Initializable {
         opt4.setText(rank.getOptions().get(3));
       }
 
-
       for (RadioButton opt : new RadioButton[] { opt1, opt2, opt3, opt4 }) {
         if (opt.getText().equals(r)) {
           // System.out.println(r + q.getQId());
@@ -499,12 +525,18 @@ public class SurveyController implements Initializable {
           // Return a string of rating options according to the value
           int option = value.intValue();
           switch (option) {
-            case 1: return "Very poor";
-            case 2: return "Poor";
-            case 3: return "Average";
-            case 4: return "Good";
-            case 5: return "Very good";
-            default: return "";
+            case 1:
+              return "Very poor";
+            case 2:
+              return "Poor";
+            case 3:
+              return "Average";
+            case 4:
+              return "Good";
+            case 5:
+              return "Very good";
+            default:
+              return "";
           }
         }
 
@@ -512,16 +544,22 @@ public class SurveyController implements Initializable {
         public Double fromString(String string) {
           // Return the number of the rating option in the string
           switch (string) {
-            case "Very poor": return 1d;
-            case "Poor": return 2d;
-            case "Average": return 3d;
-            case "Good": return 4d;
-            case "Very good": return 5d;
-            default: return 0d;
+            case "Very poor":
+              return 1d;
+            case "Poor":
+              return 2d;
+            case "Average":
+              return 3d;
+            case "Good":
+              return 4d;
+            case "Very good":
+              return 5d;
+            default:
+              return 0d;
           }
         }
       });
-      slider.setValue( (int) Double.parseDouble(r));
+      slider.setValue((int) Double.parseDouble(r));
       slider.setDisable(true);
       container.getChildren().addAll(question, slider);
       mainView.getChildren().add(container);
@@ -552,12 +590,18 @@ public class SurveyController implements Initializable {
           // Return a string of rating options according to the value
           int option = value.intValue();
           switch (option) {
-            case 1: return "Not Important";
-            case 2: return "Less Important";
-            case 3: return "Average";
-            case 4: return "Important";
-            case 5: return "Very Important";
-            default: return "";
+            case 1:
+              return "Not Important";
+            case 2:
+              return "Less Important";
+            case 3:
+              return "Average";
+            case 4:
+              return "Important";
+            case 5:
+              return "Very Important";
+            default:
+              return "";
           }
         }
 
@@ -565,16 +609,22 @@ public class SurveyController implements Initializable {
         public Double fromString(String string) {
           // Return the number of the rating option in the string
           switch (string) {
-            case "not Important": return 1d;
-            case "less Important": return 2d;
-            case "Average": return 3d;
-            case "Important": return 4d;
-            case "Very Important": return 5d;
-            default: return 0d;
+            case "not Important":
+              return 1d;
+            case "less Important":
+              return 2d;
+            case "Average":
+              return 3d;
+            case "Important":
+              return 4d;
+            case "Very Important":
+              return 5d;
+            default:
+              return 0d;
           }
         }
       });
-      slider.setValue( (int) Double.parseDouble(r));
+      slider.setValue((int) Double.parseDouble(r));
       slider.setDisable(true);
       container.getChildren().addAll(question, slider);
       mainView.getChildren().add(container);
