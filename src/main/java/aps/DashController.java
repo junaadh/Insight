@@ -61,7 +61,9 @@ public class DashController implements Initializable {
     Person p = Session.getInstance().getPerson();
     User a = p instanceof User ? (User) p : null;
     if (a == null) {
+      System.out.println(handler.searchAdmins(prefix.NID, p.getNid()));
       a = handler.searchUsers(prefix.NID, p.getNid());
+
     }
     roleField.setText(Session.getInstance().role());
     nameField.setText(p.getFullname());

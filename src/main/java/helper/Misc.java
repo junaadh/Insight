@@ -10,7 +10,9 @@ import java.util.stream.Collectors;
 
 import forms.Person;
 
+
 public class Misc {
+  public static boolean inResponse = false;
 
   public static boolean isIntegar(String str) {
     if (str == null) {

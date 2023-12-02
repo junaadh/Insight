@@ -20,6 +20,7 @@ import helper.Misc.prefix;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableView;
+import helper.Misc;
 
 public class ResponseContoller implements Initializable {
   @FXML
@@ -28,6 +29,9 @@ public class ResponseContoller implements Initializable {
   @Override
   public void initialize(URL location, ResourceBundle resource) {
     BinHandler handler = new BinHandler();
+    Misc.inResponse = true;
+    
+    
 
     Map<String, Survey> map = BinHandler.loadSurvey();
     ArrayList<Survey> list = handler.valuesToList(map);
@@ -97,13 +101,19 @@ public class ResponseContoller implements Initializable {
 
   @FXML
   private void goBack() throws IOException {
+    Misc.inResponse = false;
     boolean sc = Session.getInstance().isSurveyCreator();
-    Session.getInstance().clearViewMode();
-
-    if (sc) {
-      App.setRoot("scDash");
-    } else {
-      App.setRoot("dash");
+    boolean a = Session.getInstance().isAdmin();
+    try {
+      if (sc) {
+        App.setRoot("scDash");
+      } else if (a) {
+        App.setRoot("adminDash");
+      } else {
+        App.setRoot("dash");
+      }
+    } catch (Exception e) {
+     e.printStackTrace();
     }
   }
 }

@@ -20,6 +20,7 @@ import forms.Rating;
 import forms.Response;
 import forms.Survey;
 import helper.Javax;
+import helper.Misc;
 import helper.Session;
 import helper.Misc.prefix;
 import javafx.fxml.FXML;
@@ -134,7 +135,11 @@ public class SurveyController implements Initializable {
 
   @FXML
   private void goBack() throws IOException {
-    App.setRoot("response");
+    if (Misc.inResponse == true){
+       App.setRoot("response");
+    } else {
+      App.setRoot("list");
+    }
   }
 
   private String questiontype(Question q) {

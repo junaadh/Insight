@@ -49,13 +49,17 @@ public class ListController implements Initializable {
   @FXML
   private void goBack() throws IOException {
     boolean sc = Session.getInstance().isSurveyCreator();
-    boolean a = Session.getInstance().getPerson().getIsAdmin();
-    if (sc) {
-      App.setRoot("scDash");
-    } else if (a) {
-      App.setRoot("adminDash");
-    } else {
-      App.setRoot("dash");
+    boolean a = Session.getInstance().isAdmin();
+    try {
+      if (sc) {
+        App.setRoot("scDash");
+      } else if (a) {
+        App.setRoot("adminDash");
+      } else {
+        App.setRoot("dash");
+      }
+    } catch (Exception e) {
+     e.printStackTrace();
     }
   }
 }
